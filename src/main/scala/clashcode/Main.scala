@@ -1,25 +1,29 @@
 package clashcode
 
 import akka.actor.{Props, ActorSystem}
-import akka.routing.{RandomRouter, ConsistentHashingRouter, FromConfig}
+import akka.routing.{BroadcastRouter, RandomRouter, ConsistentHashingRouter, FromConfig}
 import akka.cluster.routing.{ClusterRouterSettings, ClusterRouterConfig}
+import com.typesafe.config.{ConfigValue, ConfigFactory}
 
 object Main extends App {
 
   override def main(args: Array[String]) {
 
-    val system = ActorSystem("cluster")
-    system.actorOf(Props(classOf[Prisoner], "PrisonerA"), "player")
-    system.actorOf(Props(classOf[Prisoner], "PrisonerB"), "prisonerB")
-    system.actorOf(Props(classOf[Prisoner], "PrisonerC"), "PrisonerC")
+    val port = args(0).toInt
+    val mainConfig = ConfigFactory.parseString("akka.remote.netty.tcp.port = " + port)
+    val config = mainConfig.withFallback(ConfigFactory.load)
+    //println(config.entrySet().toString)
+    //throw new Exception("")
+
+    val system = ActorSystem("cluster", config)
 
     val router = system.actorOf(Props.empty.withRouter(
       ClusterRouterConfig(
-        RandomRouter(),
-        ClusterRouterSettings(totalInstances = 100, routeesPath = "/user/player", allowLocalRoutees = true, useRole = None))),
+        BroadcastRouter(),
+        ClusterRouterSettings(totalInstances = 100, routeesPath = "/user/main", allowLocalRoutees = true, useRole = None))),
       name = "router")
 
-    system.actorOf(Props(classOf[Investigator], router), "inv")
+    system.actorOf(Props(classOf[MainActor], router, port), "main")
 
     readLine()
     system.shutdown()

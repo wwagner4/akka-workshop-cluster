@@ -12,7 +12,7 @@ import akka.actor.ActorIdentity
 /**
  *
  * */
-class Investigator(router: ActorRef) extends Actor {
+class MainActor(router: ActorRef, port: Int) extends Actor {
 
   /** timer for interrogation */
   context.system.scheduler.schedule(FiniteDuration(1, TimeUnit.SECONDS), FiniteDuration(1, TimeUnit.SECONDS)) {
@@ -24,19 +24,12 @@ class Investigator(router: ActorRef) extends Actor {
   def receive = {
     case "now" =>
 
-      val x = for {
-        ref1 <- (router ? Identify("x")).mapTo[ActorIdentity]
-        ref2 <- (router ? Identify("x")).mapTo[ActorIdentity]
-      } yield (ref1, ref2)
+      //val identifyRequest = (router ? Identify("x")).mapTo[ActorIdentity]
+      //identifyRequest.map(response => println("Identity: " + response))
+      router ! "ping"
 
-      val y = for {
-        (ref1, ref2) <- x
-        hello1 <- (ref1.getRef ? NameRequest).mapTo[Hello]
-        hello2 <- (ref2.getRef  ? NameRequest).mapTo[Hello]
-      } yield(hello1, hello2)
-
-      y.foreach(hello => println(hello))
-
+    case "ping" => sender ! ("pong " + port)
+    case "pong" => println("pong")
     case x => println(x)
   }
 
