@@ -9,9 +9,8 @@ object Main extends App {
 
   override def main(args: Array[String]) {
 
-    val port = args(0).toInt
-    val portConfig = ConfigFactory.parseString("akka.remote.netty.tcp.port = " + port)
-    val config = portConfig.withFallback(ConfigFactory.load)
+    val maybePortConfig = args.headOption.map(port => ConfigFactory.parseString("akka.remote.netty.tcp.port = " + port))
+    val config = maybePortConfig.map(_.withFallback(ConfigFactory.load)).getOrElse(ConfigFactory.load)
     val username = config.getString("akka.username")
 
     val system = ActorSystem("cluster", config)
