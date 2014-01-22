@@ -1,15 +1,12 @@
-package clashcode
+package clashcode.robot
 
-import clashcode.robot.CandidatePoints
-import clashcode.robot.CandidateVariance
-
-object Debug {
+object DebugHelper {
 
   var firstDebug = true
   val candVari = new CandidateVariance()
   val sepa = "\t"
 
-  def print(generation: Int, candidates: Seq[CandidatePoints]) = {
+  def print(generation: Int, candidates: Seq[Robot]) = {
 
     if (firstDebug) {
       val gen = "gen"

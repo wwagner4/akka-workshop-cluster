@@ -19,7 +19,7 @@ trait BreedingStrategy {
    *  currentRobots: The candidates from the current generation sorted by their fitness
    */
 
-  def createNewCode(currentRobots: Seq[CandidatePoints]): CandidateCode
+  def createNewCode(currentRobots: Seq[Robot]): RobotCode
 
 }
 

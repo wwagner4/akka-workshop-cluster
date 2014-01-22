@@ -29,7 +29,7 @@ class SampleActor(broadcast: ActorRef) extends Actor {
       evolve()
       self ! Evolve // constantly evolve
 
-    case robot: CandidatePoints =>
+    case robot: Robot =>
       println("I received a robot from someone! what should I do?")
 
   }
@@ -47,7 +47,9 @@ class SampleActor(broadcast: ActorRef) extends Actor {
     val allRobots = robots ++ newRobots
     robots = allRobots.sortBy(-_.points).take(robots.size)
 
-    Debug.print(0, robots)
+    DebugHelper.print(0, robots)
+
+    RobotCode(Array.fill(128)(-1.toByte)).evaluate
   }
 
 }
