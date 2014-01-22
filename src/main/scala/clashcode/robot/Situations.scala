@@ -1,7 +1,5 @@
 package clashcode.robot
 
-import scala.util.Random
-
 /** Cell represents all 3 possible cell types */
 object Cell extends Enumeration {
   val EMPTY = Value(0)
@@ -39,10 +37,6 @@ object Situations {
   /** generate situation from given robot sensor states */
   def getSituation(top: Cell.Value, right: Cell.Value, bottom: Cell.Value, left: Cell.Value, center: Cell.Value) : Situation =
     (top.id * 3 * 3 * 3 * 3 + right.id * 3 * 3 * 3 + bottom.id * 3 * 3 + left.id * 3 + center.id)
-
-  def getRandomCode : RobotCode = {
-    RobotCode(Array.fill(count)(Random.nextInt(Decisions.count).toByte))
-  }
 
 
 }

@@ -36,8 +36,8 @@ class VarianceCandidatePointsSuite extends FeatureSpec with Matchers {
 
   def createCandidatePoint(integers: String): Robot = {
     val bits = createArrayOfBytes(integers)
-    val code = new RobotCode(bits)
-    new Robot(code, 0)
+    val code = RobotCode(bits, "me", Seq.empty)
+    Robot(code, 0)
   }
   def createArrayOfBytes(in: String): Array[Byte] = {
     in.map(c => c.toByte).toArray

@@ -1,12 +1,24 @@
 package clashcode
 
-import clashcode.robot.{RobotCode, Robot, BreedingStrategy}
+import clashcode.robot.{RobotCode, Robot}
 import scala.util.Random
 
 /** A simple strategy for creating a new robot from an existing generation */
-object SampleStrategy extends BreedingStrategy {
+object SampleStrategy {
 
-  def createNewCode(currentRobots: Seq[Robot]): RobotCode = {
+  /**
+   *  Create new members of the next generation.
+   *  To do so perform the following steps
+   *  - Select couples of candidates to be the parents for some of the members
+   *    of the next generation
+   *  - create new candidates by applying crossover on the selected couples
+   *  - Apply mutation on the outcome of crossing over the couples (optional)
+   *  - Apply mutation on any of the candidates from the previous generation (optional)
+   *  - Create new random candidates (optional)
+   *
+   *  currentRobots: The candidates from the current generation sorted by their fitness
+   */
+  def createNewCode(username: String, currentRobots: Seq[Robot]): RobotCode = {
 
     // select parents
     val left = currentRobots(Random.nextInt(currentRobots.size)).code
@@ -17,7 +29,7 @@ object SampleStrategy extends BreedingStrategy {
     val result = left.code.take(leftCount) ++ right.code.drop(leftCount)
 
     // TODO: mutate
-    RobotCode(result)
+    RobotCode(result, username, Seq(left, right))
   }
 
 }

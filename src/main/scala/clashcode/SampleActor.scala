@@ -12,8 +12,10 @@ case object Evolve
 
 class SampleActor(broadcast: ActorRef) extends Actor {
 
+  val myName = "anonymous" // created robots should be tagged with this name
+
   // these are my robots!
-  var robots = (1 to 100).map(_ => Situations.getRandomCode.evaluate)
+  var robots = (1 to 100).map(_ => RobotCode.createRandomCode(myName).evaluate)
 
   // send message to myself every 10 seconds
   context.system.scheduler.schedule(FiniteDuration(10, TimeUnit.SECONDS), FiniteDuration(10, TimeUnit.SECONDS)) {
@@ -38,7 +40,7 @@ class SampleActor(broadcast: ActorRef) extends Actor {
   def evolve() = {
 
     // create next generation robots
-    val newRobotCodes = for (i <- 1 to 100) yield SampleStrategy.createNewCode(robots)
+    val newRobotCodes = for (i <- 1 to 100) yield SampleStrategy.createNewCode(myName, robots)
 
     // evaluate those new robots (using multiple cores)
     val newRobots = newRobotCodes.par.map(_.evaluate)
@@ -48,8 +50,6 @@ class SampleActor(broadcast: ActorRef) extends Actor {
     robots = allRobots.sortBy(-_.points).take(robots.size)
 
     DebugHelper.print(0, robots)
-
-    RobotCode(Array.fill(128)(-1.toByte)).evaluate
   }
 
 }
