@@ -2,7 +2,7 @@ package clashcode.robot
 
 /**
  * Calculates a variance value that reflects the
- * number of different bytes in codes when compairing
+ * number of different bytes in codes when comparing
  * pairs of candidates
  */
 class CandidateVariance {

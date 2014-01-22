@@ -3,9 +3,10 @@ package clashcode.robot
 import scala.util.Random
 import scala.collection.mutable
 
-
+/** represents a field with items which the robot has to collect */
 case class Field(fieldSize: Int, itemCount: Int, items: Seq[Boolean])
 
+/** represents a single game in which the robot has to collect all items on the given field */
 class Game(field: Field, random: Random) {
 
   val items = mutable.ArraySeq(field.items : _*)
@@ -23,6 +24,7 @@ class Game(field: Field, random: Random) {
       Cell.EMPTY
   }
 
+  /** returns the current situation of the robot, represented by a unique index */
   def situationIndex : Int = {
     Situations.getIndex(Situations.getSituation(cell(x, y - 1), cell(x + 1, y), cell(x, y + 1), cell(x - 1, y), cell(x, y)))
   }
@@ -68,51 +70,3 @@ class Game(field: Field, random: Random) {
 
 }
 
-object Evaluator {
-
-  private val fieldSize = 10;
-
-  private val itemCount = fieldSize * fieldSize / 2; // 50%
-
-  lazy private val testFields = (0 until 200).map(seed => createRandomField(new Random(seed)))
-
-  /** create deterministic random field from given random seed */
-  private def createRandomField(random: Random) = {
-    var fieldItemCount = 0
-    val items = Array.fill(fieldSize * fieldSize)(false)
-    while (fieldItemCount < itemCount) {
-      val index = random.nextInt(items.length)
-      if (!items(index)) {
-        items(index) = true
-        fieldItemCount += 1
-      }
-    }
-    Field(fieldSize, itemCount, items)
-  }
-
-  /** get points for given candidate
-    * 20 trials on different fields, */
-  def evaluate(decisions: IndexedSeq[Decision]) : Int = {
-    val moveRandom = new Random(0)
-    var points = 0
-
-    // test on 20 fields
-    testFields.foreach(testField => {
-      val game = new Game(testField, moveRandom)
-
-      // max 200 robot turns
-      var turns = 0
-      while (turns < 200 && game.itemCount > 0) {
-        turns += 1
-        val index = game.situationIndex
-        val decision = decisions(index)
-        val p = game.act(decision)
-        points += p
-      }
-
-      //points += 200 - turns // extra points for completing early
-    })
-    points
-  }
-
-}
