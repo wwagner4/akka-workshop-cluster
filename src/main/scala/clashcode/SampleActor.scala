@@ -36,7 +36,6 @@ class SampleActor(broadcast: ActorRef) extends Actor {
 
   }
 
-
   def evolve() = {
 
     // create next generation robots
@@ -49,7 +48,7 @@ class SampleActor(broadcast: ActorRef) extends Actor {
     val allRobots = robots ++ newRobots
     robots = allRobots.sortBy(-_.points).take(robots.size)
 
-    DebugHelper.print(0, robots)
+    DebugHelper.print(robots) // print some info about our generation
   }
 
 }

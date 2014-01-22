@@ -6,7 +6,7 @@ object DebugHelper {
   val candVari = new CandidateVariance()
   val sepa = "\t"
 
-  def print(generation: Int, candidates: Seq[Robot]) = {
+  def print(candidates: Seq[Robot]) = {
 
     if (firstDebug) {
       val gen = "gen"
@@ -17,6 +17,8 @@ object DebugHelper {
       println(f"$gen%5s$sepa$first%5s$sepa$last%5s$sepa$vari%5s$sepa$vari1%5s")
       firstDebug = false
     }
+
+    val generation = candidates.map(_.code.generation).max
 
     val first = candidates(0).points
     val last = candidates.last.points

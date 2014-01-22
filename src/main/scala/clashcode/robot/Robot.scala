@@ -20,6 +20,9 @@ case class RobotCode(code: Array[Byte], creatorName: String, generations: Map[St
 
   if (code.length != Situations.count) throw new IllegalArgumentException("Length of code must be " + Situations.count)
 
+  /** generation of this code */
+  def generation : Int = generations.map(_._2).sum
+
   /** evaluate this code. returns a robot with its calculated fitness.
     *
     * creatorName: please provide your name so we know who created this robot

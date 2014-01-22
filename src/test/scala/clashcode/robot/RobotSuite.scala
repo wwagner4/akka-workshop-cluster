@@ -34,7 +34,7 @@ class RobotSuite extends FeatureSpec with Matchers {
       oos.writeObject(robot);
       oos.close();
 
-      800 should be > bos.toByteArray.length
+      566 should equal(bos.toByteArray.length)
     }
 
     scenario("should merge ancestor info") {

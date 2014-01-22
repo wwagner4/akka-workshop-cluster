@@ -18,7 +18,7 @@ object SampleStrategy {
    *
    *  currentRobots: The candidates from the current generation sorted by their fitness
    */
-  def createNewCode(username: String, currentRobots: Seq[Robot]): RobotCode = {
+  def createNewCode(creatorName: String, currentRobots: Seq[Robot]): RobotCode = {
 
     // select parents
     val left = currentRobots(Random.nextInt(currentRobots.size)).code
@@ -29,7 +29,7 @@ object SampleStrategy {
     val result = left.code.take(leftCount) ++ right.code.drop(leftCount)
 
     // TODO: mutate
-    RobotCode(result, username, Seq(left, right))
+    RobotCode(result, creatorName, Seq(left, right))
   }
 
 }
