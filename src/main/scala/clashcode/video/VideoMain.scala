@@ -6,8 +6,10 @@ import clashcode.video.swing.AwtGraphics
 import clashcode.video.swing.AwtRectGraphics
 
 object VideoMain extends App {
+
+  val max = Max(11, 15)
   
-    val cans = Set(
+  val cans = Set(
     Pos(1, 4),
     Pos(2, 5),
     Pos(3, 14),
@@ -24,16 +26,12 @@ object VideoMain extends App {
   val device = new SwingDevice(createGraphics)
 
   def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphics {
-      
-      
-      def graphics: Graphics2D = g
-      def drawArea: DrawArea = device.drawArea
-      
-    }
 
-  VideoCore.play(device, stages, 5)
+    def graphics: Graphics2D = g
+    def drawArea: DrawArea = device.drawArea
 
+  }
 
-  
-  
+  VideoCore.play(device, stages, Max(11, 13), 5)
+
 }

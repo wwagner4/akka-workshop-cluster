@@ -12,38 +12,52 @@ import clashcode.video.Pos
 import clashcode.video.Stage
 import clashcode.video.DrawArea
 import clashcode.video.Rec
-
+import clashcode.video.Max
+import clashcode.video.EffectiveField
+import clashcode.video.EffectiveOffset
 
 trait AwtGraphics extends Graphics {
-  
+
   def graphics: Graphics2D
-  
+
 }
 
 trait AwtRectGraphics extends AwtGraphics {
-  
+
   val da = drawArea
-  
-  val x = da.offset.x
-  val y = da.offset.y
-  val w = da.area.w
-  val h = da.area.h
 
   def clear: Unit = {
     graphics.setColor(Color.WHITE)
+    val x = da.offset.x
+    val y = da.offset.y
+    val w = da.area.w
+    val h = da.area.h
     graphics.fillRect(x, y, w, h)
   }
-  def paintField = {
+  def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
-    graphics.drawRect(x + 5, y + 5, w - 10, h - 10)
+    val field = EffectiveField.calc(da, 0.6, 10, 10)
+    (0 to (max.x / 2) - 1).foreach(i => {
+      val fw = field.area.w / (max.x / 2)
+      val d = i * fw;
+      graphics.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h) 
+    })
+    (0 to (max.y / 2) - 1).foreach(i => {
+      val fh = field.area.h / (max.y / 2)
+      val d = i * fh;
+      graphics.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d) 
+    })
+    graphics.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
   }
-  def paintCan(pos: Pos) = {
+  def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
-    graphics.fillRect(x + pos.x * 10, y + pos.y * 10, 5, 5)
+    val o: Pos = EffectiveOffset.calc(pos, max, da, 0.6, 10, 10)
+    graphics.fillRect(o.x, o.y, 5, 5)
   }
-  def paintRobot(pos: Pos, dir: Direction) = {
+  def paintRobot(pos: Pos, dir: Direction, max: Max) = {
     graphics.setColor(Color.GREEN)
-    graphics.fillRect(x + pos.x * 10, y + pos.y * 10, 5, 10)
+    val o: Pos = EffectiveOffset.calc(pos, max, da, 0.6, 10, 10)
+    graphics.fillRect(o.x, o.y, 5, 10)
   }
 
 }
@@ -84,5 +98,5 @@ case class SwingDevice(g: Graphics2D => AwtGraphics) extends Device {
   def drawArea: DrawArea = {
     DrawArea(Pos(0, 0), Rec(panel.size.width, panel.size.height))
   }
-  
+
 }

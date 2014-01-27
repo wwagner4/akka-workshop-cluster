@@ -6,30 +6,31 @@ object VideoCore {
 
   case class Path(stages: List[Stage])
 
-  def play(device: Device, stages: List[Stage], framesPerSecond: Int): Unit = {
+  def play(device: Device, stages: List[Stage], max: Max, framesPerSecond: Int): Unit = {
     println("play")
     while (true) {
       for (s <- stages) {
-        device.paintStage(s, paintStage)
+        device.paintStage(s, paintStage(max))
         Thread.sleep((1000.0 / framesPerSecond).toInt);
       }
     }
     println("finished play")
   }
 
-  def paintStage(g: Graphics, stage: Stage): Unit = {
+  def paintStage(max: Max)(g: Graphics, stage: Stage): Unit = {
     g.clear
     val visibleCans = stage.cans - stage.robot.pos
-    g.paintField
+    g.paintField(max)
     for (c <- visibleCans) {
-      g.paintCan(c)
+      g.paintCan(c, max)
     }
-    g.paintRobot(stage.robot.pos, stage.robot.dir)
+    g.paintRobot(stage.robot.pos, stage.robot.dir, max)
   }
 
 }
 
 case class Pos(x: Int, y: Int)
+case class Max(x: Int, y: Int)
 case class Rec(w: Int, h: Int)
 
 case class DrawArea(offset: Pos, area: Rec)
@@ -57,9 +58,9 @@ trait Device {
 trait Graphics {
   def drawArea: DrawArea
   def clear: Unit
-  def paintField
-  def paintCan(pos: Pos)
-  def paintRobot(pos: Pos, dir: Direction)
+  def paintField(max: Max)
+  def paintCan(pos: Pos, max: Max)
+  def paintRobot(pos: Pos, dir: Direction, max: Max)
 }
 
 object Maxval {
