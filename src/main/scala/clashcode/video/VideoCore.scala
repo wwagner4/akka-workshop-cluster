@@ -2,9 +2,7 @@ package clashcode.video
 
 import clashcode.video.swing.SwingDevice
 
-object VideoCore {
-
-  case class Path(stages: List[Stage])
+object Video {
 
   def play(device: Device, stages: List[Stage], max: Max, framesPerSecond: Int): Unit = {
     println("play")

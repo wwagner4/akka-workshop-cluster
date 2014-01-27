@@ -22,42 +22,51 @@ trait AwtGraphics extends Graphics {
 
 }
 
-trait AwtRectGraphics extends AwtGraphics {
+abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtGraphics {
 
-  val da = drawArea
+  val _drawArea = drawArea
 
   def clear: Unit = {
     graphics.setColor(Color.WHITE)
-    val x = da.offset.x
-    val y = da.offset.y
-    val w = da.area.w
-    val h = da.area.h
+    val x = _drawArea.offset.x
+    val y = _drawArea.offset.y
+    val w = _drawArea.area.w
+    val h = _drawArea.area.h
     graphics.fillRect(x, y, w, h)
   }
   def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
-    val field = EffectiveField.calc(da, 0.6, 10, 10)
+    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
     (0 to (max.x / 2) - 1).foreach(i => {
       val fw = field.area.w / (max.x / 2)
       val d = i * fw;
-      graphics.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h) 
+      graphics.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h)
     })
     (0 to (max.y / 2) - 1).foreach(i => {
       val fh = field.area.h / (max.y / 2)
       val d = i * fh;
-      graphics.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d) 
+      graphics.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d)
     })
     graphics.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
   }
+
+}
+
+abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
+
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
-    val o: Pos = EffectiveOffset.calc(pos, max, da, 0.6, 10, 10)
-    graphics.fillRect(o.x, o.y, 5, 5)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val o: Pos = EffectiveOffset.calc(pos, max, f)
+    val fw = f.area.w / (max.x / 2)
+    val w = (fw.toDouble / 10).toInt
+    graphics.fillRect(o.x - w, o.y - w, 2 * w, 2 * w)
   }
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
     graphics.setColor(Color.GREEN)
-    val o: Pos = EffectiveOffset.calc(pos, max, da, 0.6, 10, 10)
-    graphics.fillRect(o.x, o.y, 15, 15)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val o: Pos = EffectiveOffset.calc(pos, max, f)
+    graphics.fillRect(o.x - 5, o.y - 5, 10, 10)
   }
 
 }

@@ -2,8 +2,8 @@ package clashcode.video
 
 import clashcode.video.swing.SwingDevice
 import java.awt.Graphics2D
+import clashcode.video.swing.AwtRectGraphicsSimple
 import clashcode.video.swing.AwtGraphics
-import clashcode.video.swing.AwtRectGraphics
 
 object VideoMain extends App {
 
@@ -23,13 +23,13 @@ object VideoMain extends App {
 
   val device = new SwingDevice(createGraphics)
 
-  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphics {
+  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphicsSimple(0.8, 50, 30) {
 
     def graphics: Graphics2D = g
     def drawArea: DrawArea = device.drawArea
 
   }
 
-  VideoCore.play(device, stages, Max(10, 8), 2)
+  Video.play(device, stages, Max(20, 20), 2)
 
 }
