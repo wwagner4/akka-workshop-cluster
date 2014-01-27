@@ -1,55 +1,13 @@
 package clashcode.video
 
+import clashcode.video.swing.SwingDevice
 import java.awt.Graphics2D
-import clashcode.video.VideoMain.Pos
-import clashcode.video.VideoMain.Direction
+import clashcode.video.swing.AwtGraphics
+import clashcode.video.swing.AwtRectGraphics
 
 object VideoMain extends App {
-
-  sealed trait Direction
-
-  case object N extends Direction
-  case object NE extends Direction
-  case object E extends Direction
-  case object SE extends Direction
-  case object S extends Direction
-  case object SW extends Direction
-  case object W extends Direction
-  case object NW extends Direction
-
-  val maxx = 15
-  val maxy = 9
-
-  require(Maxval.valid(maxx))
-  require(Maxval.valid(maxy))
-
-  case class Pos(posx: Int, posy: Int)
-
-  case class Robot(pos: Pos, dir: Direction)
-
-  case class Stage(robot: Robot, cans: Set[Pos])
-
-  case class Path(stages: List[Stage])
-
-  def play(stages: List[Stage], g: Graphics): Unit = {
-    for (s <- stages) {
-      paintStage(g, s)
-    }
-  }
-
-  def paintStage(g: Graphics, stage: Stage): Unit = {
-    g.clear
-    val visibleCans = stage.cans - stage.robot.pos
-    g.paintField
-    for(c <- visibleCans) {
-      g.paintCan(c)
-    }
-    g.paintRobot(stage.robot.pos, stage.robot.dir)
-  }
   
-  def createGraphics: Graphics = ???
-  
-  val cans = Set(
+    val cans = Set(
     Pos(1, 4),
     Pos(2, 5),
     Pos(3, 14),
@@ -63,43 +21,19 @@ object VideoMain extends App {
     Stage(Robot(Pos(1, 1), SW), cans),
     Stage(Robot(Pos(1, 3), S), cans1))
 
-  val sp = new SwingPlayer()  
-    
-  play(stages, sp.graphics)
-  
-}
+  val device = new SwingDevice(createGraphics)
 
-
-
-trait Graphics {
-	def clear: Unit
-	def paintField
-	def paintCan(pos: Pos)
-	def paintRobot(pos: Pos, dir: Direction)
-}
-
-class AwtGraphics(g: Graphics2D) extends Graphics {
-	def clear: Unit = ???
-	def paintField = ???
-	def paintCan(pos: Pos) = ???
-	def paintRobot(pos: Pos, dir: Direction) = ???
-
-}
-
-class SwingPlayer {
- 
-  def graphics: Graphics = ???
-  
-}
-
-
-object Maxval {
-
-  def valid(value: Int): Boolean = {
-    def isOdd: Boolean = {
-      (value + 1) % 2 == 0
+  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphics {
+      
+      
+      def graphics: Graphics2D = g
+      def drawArea: DrawArea = device.drawArea
+      
     }
-    value >= 3 && isOdd
-  }
-}
+
+  VideoCore.play(device, stages, 5)
+
+
   
+  
+}

@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-slf4j"      % "2.2.3",
   "com.typesafe.akka" %% "akka-testkit"    % "2.2.3",
   "ch.qos.logback"    %  "logback-classic" % "1.0.13",
+  "org.scala-lang"    %  "scala-swing"     % "2.10.3",
   "junit"             %  "junit"           % "4.11"   % "test",
   "org.scalatest"     %% "scalatest"       % "2.0"    % "test"
 )
