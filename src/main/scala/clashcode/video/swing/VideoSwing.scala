@@ -24,10 +24,10 @@ trait AwtRectGraphics extends AwtGraphics {
   
   val da = drawArea
   
-  val x = da.offset.posx
-  val y = da.offset.posy
-  val w = da.area.width
-  val h = da.area.height
+  val x = da.offset.x
+  val y = da.offset.y
+  val w = da.area.w
+  val h = da.area.h
 
   def clear: Unit = {
     graphics.setColor(Color.WHITE)
@@ -39,11 +39,11 @@ trait AwtRectGraphics extends AwtGraphics {
   }
   def paintCan(pos: Pos) = {
     graphics.setColor(Color.RED)
-    graphics.fillRect(x + pos.posx * 10, y + pos.posy * 10, 5, 5)
+    graphics.fillRect(x + pos.x * 10, y + pos.y * 10, 5, 5)
   }
   def paintRobot(pos: Pos, dir: Direction) = {
     graphics.setColor(Color.GREEN)
-    graphics.fillRect(x + pos.posx * 10, y + pos.posy * 10, 5, 10)
+    graphics.fillRect(x + pos.x * 10, y + pos.y * 10, 5, 10)
   }
 
 }

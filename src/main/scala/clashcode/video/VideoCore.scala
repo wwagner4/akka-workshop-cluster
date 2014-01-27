@@ -29,8 +29,8 @@ object VideoCore {
 
 }
 
-case class Pos(posx: Int, posy: Int)
-case class Rec(width: Int, height: Int)
+case class Pos(x: Int, y: Int)
+case class Rec(w: Int, h: Int)
 
 case class DrawArea(offset: Pos, area: Rec)
 
