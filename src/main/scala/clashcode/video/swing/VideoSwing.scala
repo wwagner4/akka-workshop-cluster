@@ -15,6 +15,10 @@ import clashcode.video.Rec
 import clashcode.video.Max
 import clashcode.video.EffectiveField
 import clashcode.video.EffectiveOffset
+import javax.imageio.ImageIO
+import sun.java2d.pipe.BufferedBufImgOps
+import java.awt.geom.AffineTransform
+import java.awt.image.AffineTransformOp
 
 trait AwtGraphics extends Graphics {
 
@@ -25,7 +29,7 @@ trait AwtGraphics extends Graphics {
 abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtGraphics {
 
   val _drawArea = drawArea
-
+  
   def clear: Unit = {
     graphics.setColor(Color.WHITE)
     val x = _drawArea.offset.x
@@ -49,11 +53,59 @@ abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder:
     })
     graphics.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
   }
-
 }
 
 abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
 
+  def paintCan(pos: Pos, max: Max) = {
+    graphics.setColor(Color.RED)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val o: Pos = EffectiveOffset.calc(pos, max, f)
+    val fw = f.area.w / (max.x / 2)
+    val w = (fw.toDouble / 10).toInt
+    graphics.fillRect(o.x - w, o.y - w, 2 * w, 2 * w)
+  }
+  def paintRobot(pos: Pos, dir: Direction, max: Max) = {
+    graphics.setColor(Color.GREEN)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val o: Pos = EffectiveOffset.calc(pos, max, f)
+    graphics.fillRect(o.x - 5, o.y - 5, 10, 10)
+  }
+
+}
+
+abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
+
+  val imgNames = List(
+      "img/kacheln/k01.png",
+      "img/kacheln/k02.png",
+      "img/kacheln/k03.png",
+      "img/kacheln/k04.png",
+      "img/kacheln/k05.png",
+      "img/kacheln/k06.png")
+  val images = imgNames.map(name => javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(name)))		  
+
+  override def paintField(max: Max) = {
+    graphics.setColor(Color.BLACK)
+    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val fw = field.area.w.toDouble / max.x
+    val fh = field.area.h.toDouble / max.y
+    for (i <- (0 until (max.x / 2))) {
+      for (j <- (0 until (max.y / 2))) {
+        val img = images(util.Random.nextInt(images.size))
+        val iw = img.getWidth()
+        val ih = img.getHeight()
+        val sx = 2 * fw / iw
+        val sy = 2 * fh / ih
+        //println(sx)
+        val t0 = AffineTransform.getTranslateInstance(field.offset.x + 2 * i * fw, field.offset.y + 2 * j * fh)
+        t0.concatenate(AffineTransform.getScaleInstance(sx, sy))
+        graphics.drawImage(img, t0, null)
+      }
+    }
+  }
+  
+  
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
