@@ -57,7 +57,7 @@ trait AwtRectGraphics extends AwtGraphics {
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
     graphics.setColor(Color.GREEN)
     val o: Pos = EffectiveOffset.calc(pos, max, da, 0.6, 10, 10)
-    graphics.fillRect(o.x, o.y, 5, 10)
+    graphics.fillRect(o.x, o.y, 15, 15)
   }
 
 }

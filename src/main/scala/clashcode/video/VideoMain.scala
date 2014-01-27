@@ -7,15 +7,13 @@ import clashcode.video.swing.AwtRectGraphics
 
 object VideoMain extends App {
 
-  val max = Max(11, 15)
-  
   val cans = Set(
     Pos(1, 4),
     Pos(2, 5),
-    Pos(3, 14),
+    Pos(3, 3),
     Pos(10, 1))
 
-  val cans1 = cans - Pos(3, 14)
+  val cans1 = cans - Pos(3, 3)
 
   val stages = List(
     Stage(Robot(Pos(0, 0), W), cans),
@@ -32,6 +30,6 @@ object VideoMain extends App {
 
   }
 
-  VideoCore.play(device, stages, Max(11, 13), 5)
+  VideoCore.play(device, stages, Max(10, 8), 2)
 
 }
