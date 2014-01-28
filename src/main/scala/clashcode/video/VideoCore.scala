@@ -61,13 +61,4 @@ trait Graphics {
   def paintRobot(pos: Pos, dir: Direction, max: Max)
 }
 
-object Maxval {
-
-  def valid(value: Int): Boolean = {
-    def isOdd: Boolean = {
-      (value + 1) % 2 == 0
-    }
-    value >= 3 && isOdd
-  }
-}
   
