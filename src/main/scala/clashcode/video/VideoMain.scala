@@ -6,8 +6,8 @@ import clashcode.video.swing._
 object VideoMain extends App {
 
   val cans = Set(
-    Pos(1, 4),
-    Pos(2, 5),
+    Pos(5, 4),
+    Pos(5, 5),
     Pos(3, 3),
     Pos(10, 1))
 
@@ -28,11 +28,21 @@ object VideoMain extends App {
     Stage(Robot(Pos(3, 6), E), cans),
     Stage(Robot(Pos(4, 6), E), cans),
     Stage(Robot(Pos(5, 6), E), cans),
-    Stage(Robot(Pos(6, 6), E), cans))
+    Stage(Robot(Pos(6, 6), E), cans),
+    Stage(Robot(Pos(6, 6), NE), cans),
+    Stage(Robot(Pos(6, 6), N), cans),
+    Stage(Robot(Pos(6, 6), NW), cans),
+    Stage(Robot(Pos(6, 6), W), cans),
+    Stage(Robot(Pos(6, 6), SW), cans),
+    Stage(Robot(Pos(6, 6), S), cans),
+    Stage(Robot(Pos(6, 6), S), cans),
+    Stage(Robot(Pos(6, 6), S), cans),
+    Stage(Robot(Pos(6, 6), S), cans),
+    Stage(Robot(Pos(6, 6), S), cans))
 
   val device = new SwingDevice(createGraphics)
 
-  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphicsImages(0.5, 50, 30) {
+  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphicsImages(0.7, 20, 30) {
 
     def graphics: Graphics2D = g
     def drawArea: DrawArea = device.drawArea

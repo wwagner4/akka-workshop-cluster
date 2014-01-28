@@ -5,10 +5,9 @@ import clashcode.video.swing.SwingDevice
 object Video {
 
   def play(device: Device, stages: List[Stage], max: Max, framesPerSecond: Int): Unit = {
-    println("play")
     while (true) {
       for (s <- stages) {
-        device.paintStage(s, paintStage(max))
+        device.paintStage(s, paintStage(max)(_, _))
         Thread.sleep((1000.0 / framesPerSecond).toInt);
       }
     }

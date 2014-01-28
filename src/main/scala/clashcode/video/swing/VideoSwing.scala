@@ -11,6 +11,7 @@ import sun.java2d.pipe.BufferedBufImgOps
 import java.awt.geom.AffineTransform
 import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
+import scala.util.Random
 
 trait AwtGraphics extends Graphics {
 
@@ -75,9 +76,10 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
     val field = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
     val fw = field.area.w.toDouble / max.x
     val fh = field.area.h.toDouble / max.y
+    var k = 0;
     for (i <- (0 until (max.x / 2))) {
       for (j <- (0 until (max.y / 2))) {
-        val img = ImageProvider.kacheln((i + j) % ImageProvider.kacheln.size)
+        val img = ImageProvider.kacheln(k % ImageProvider.kacheln.size)
         val iw = img.getWidth()
         val ih = img.getHeight()
         val sx = 2 * fw / iw
@@ -85,6 +87,7 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
         val transform = AffineTransform.getTranslateInstance(field.offset.x + 2 * i * fw, field.offset.y + 2 * j * fh)
         transform.concatenate(AffineTransform.getScaleInstance(sx, sy))
         graphics.drawImage(img, transform, null)
+        k += 1
       }
     }
   }
@@ -166,7 +169,11 @@ object ImageProvider {
       "img/kacheln/k04.png",
       "img/kacheln/k05.png",
       "img/kacheln/k06.png")
-    imgNames.map(name => img(name))
+    val images = imgNames.map(name => img(name))
+    val x = for (i <- 1 to 500) yield {
+      images(Random.nextInt(images.size))
+    }
+    x.toList
   }
 
   lazy val robots: Map[Direction, BufferedImage] = {
