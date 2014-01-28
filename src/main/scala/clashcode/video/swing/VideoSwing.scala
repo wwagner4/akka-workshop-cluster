@@ -5,20 +5,12 @@ import scala.swing.MainFrame
 import java.awt.Dimension
 import scala.swing.Panel
 import java.awt.Color
-import clashcode.video.Device
-import clashcode.video.Direction
-import clashcode.video.Graphics
-import clashcode.video.Pos
-import clashcode.video.Stage
-import clashcode.video.DrawArea
-import clashcode.video.Rec
-import clashcode.video.Max
-import clashcode.video.EffectiveField
-import clashcode.video.EffectiveOffset
+import clashcode.video._
 import javax.imageio.ImageIO
 import sun.java2d.pipe.BufferedBufImgOps
 import java.awt.geom.AffineTransform
 import java.awt.image.AffineTransformOp
+import java.awt.image.BufferedImage
 
 trait AwtGraphics extends Graphics {
 
@@ -29,7 +21,7 @@ trait AwtGraphics extends Graphics {
 abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtGraphics {
 
   val _drawArea = drawArea
-  
+
   def clear: Unit = {
     graphics.setColor(Color.WHITE)
     val x = _drawArea.offset.x
@@ -55,7 +47,8 @@ abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder:
   }
 }
 
-abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
+abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topBorder: Int)
+  extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
 
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
@@ -74,16 +67,8 @@ abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topB
 
 }
 
-abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
-
-  val imgNames = List(
-      "img/kacheln/k01.png",
-      "img/kacheln/k02.png",
-      "img/kacheln/k03.png",
-      "img/kacheln/k04.png",
-      "img/kacheln/k05.png",
-      "img/kacheln/k06.png")
-  val images = imgNames.map(name => javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(name)))		  
+abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topBorder: Int)
+  extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
 
   override def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
@@ -92,33 +77,38 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
     val fh = field.area.h.toDouble / max.y
     for (i <- (0 until (max.x / 2))) {
       for (j <- (0 until (max.y / 2))) {
-        val img = images(util.Random.nextInt(images.size))
+        val img = ImageProvider.kacheln((i + j) % ImageProvider.kacheln.size)
         val iw = img.getWidth()
         val ih = img.getHeight()
         val sx = 2 * fw / iw
         val sy = 2 * fh / ih
-        //println(sx)
-        val t0 = AffineTransform.getTranslateInstance(field.offset.x + 2 * i * fw, field.offset.y + 2 * j * fh)
-        t0.concatenate(AffineTransform.getScaleInstance(sx, sy))
-        graphics.drawImage(img, t0, null)
+        val transform = AffineTransform.getTranslateInstance(field.offset.x + 2 * i * fw, field.offset.y + 2 * j * fh)
+        transform.concatenate(AffineTransform.getScaleInstance(sx, sy))
+        graphics.drawImage(img, transform, null)
       }
     }
   }
-  
-  
+
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
-    val fw = f.area.w / (max.x / 2)
-    val w = (fw.toDouble / 10).toInt
-    graphics.fillRect(o.x - w, o.y - w, 2 * w, 2 * w)
+    val fw = f.area.w
+    val s = fw.toDouble / 3000
+    val transform = AffineTransform.getTranslateInstance(o.x, o.y)
+    transform.concatenate(AffineTransform.getScaleInstance(s, s))
+    graphics.drawImage(ImageProvider.can, transform, null)
   }
+
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
     graphics.setColor(Color.GREEN)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
-    graphics.fillRect(o.x - 5, o.y - 5, 10, 10)
+    val fw = f.area.w
+    val s = fw.toDouble / 3000
+    val transform = AffineTransform.getTranslateInstance(o.x, o.y)
+    transform.concatenate(AffineTransform.getScaleInstance(s, s))
+    graphics.drawImage(ImageProvider.robots(dir), transform, null)
   }
 
 }
@@ -160,4 +150,38 @@ case class SwingDevice(g: Graphics2D => AwtGraphics) extends Device {
     DrawArea(Pos(0, 0), Rec(panel.size.width, panel.size.height))
   }
 
+}
+
+object ImageProvider {
+
+  private def img(resName: String): BufferedImage = {
+    javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(resName))
+  }
+
+  lazy val kacheln: List[BufferedImage] = {
+    val imgNames = List(
+      "img/kacheln/k01.png",
+      "img/kacheln/k02.png",
+      "img/kacheln/k03.png",
+      "img/kacheln/k04.png",
+      "img/kacheln/k05.png",
+      "img/kacheln/k06.png")
+    imgNames.map(name => img(name))
+  }
+
+  lazy val robots: Map[Direction, BufferedImage] = {
+    val imgNames = List(
+      (S, "img/robots/r00.png"),
+      (SE, "img/robots/r01.png"),
+      (E, "img/robots/r02.png"),
+      (NE, "img/robots/r03.png"),
+      (N, "img/robots/r04.png"),
+      (NW, "img/robots/r05.png"),
+      (W, "img/robots/r06.png"),
+      (SW, "img/robots/r07.png"))
+    imgNames.map { case (key, name) => (key, img(name)) }.toMap
+  }
+  lazy val can: BufferedImage = {
+    img("img/cans/can.png")
+  }
 }
