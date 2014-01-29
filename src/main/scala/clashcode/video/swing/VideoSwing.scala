@@ -79,8 +79,7 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
     var k = 0;
     for (i <- (0 until (max.x / 2))) {
       for (j <- (0 until (max.y / 2))) {
-        val vimg = ImageProvider.kacheln(k % ImageProvider.kacheln.size)
-        val img = vimg.image
+        val img = ImageProvider.kacheln(k % ImageProvider.kacheln.size)
         val iw = img.getWidth()
         val ih = img.getHeight()
         val sx = 2 * fw / iw
@@ -104,7 +103,6 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
 
     val imgoffx = (img.getWidth.toDouble * s * vimg.centerx).toInt  
     val imgoffy = (img.getHeight.toDouble * s * vimg.centery).toInt  
-    //println(s"s=$s imgoffx=$imgoffx imgoffy=$imgoffy")
     val transform = AffineTransform.getTranslateInstance(o.x - imgoffx, o.y - imgoffy)
     
     transform.concatenate(AffineTransform.getScaleInstance(s, s))
@@ -176,7 +174,7 @@ object ImageProvider {
     javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(resName))
   }
 
-  lazy val kacheln: List[VideoImage] = {
+  lazy val kacheln: List[BufferedImage] = {
     val imgNames = List(
       "img/kacheln/k01.png",
       "img/kacheln/k02.png",
@@ -184,7 +182,7 @@ object ImageProvider {
       "img/kacheln/k04.png",
       "img/kacheln/k05.png",
       "img/kacheln/k06.png")
-    val images = imgNames.map(name => VideoImage(img(name), 0.0, 0.0))
+    val images = imgNames.map(name => img(name))
     val x = for (i <- 1 to 500) yield {
       images(Random.nextInt(images.size))
     }
@@ -201,7 +199,7 @@ object ImageProvider {
       (NW, "img/robots/r05.png"),
       (W, "img/robots/r06.png"),
       (SW, "img/robots/r07.png"))
-    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.5, 0.7)) }.toMap
+    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.45, 0.7)) }.toMap
   }
   lazy val can: VideoImage = {
     VideoImage(img("img/cans/can.png"), 0.5, 0.7)
