@@ -6,10 +6,10 @@ import clashcode.video.swing._
 object VideoMain extends App {
 
   val cans = Set(
-    Pos(5, 4),
     Pos(5, 5),
+    Pos(1, 3),
     Pos(3, 3),
-    Pos(10, 1))
+    Pos(6, 6))
 
   val cans1 = cans - Pos(3, 3)
 

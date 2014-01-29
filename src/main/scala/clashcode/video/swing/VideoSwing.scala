@@ -79,7 +79,8 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
     var k = 0;
     for (i <- (0 until (max.x / 2))) {
       for (j <- (0 until (max.y / 2))) {
-        val img = ImageProvider.kacheln(k % ImageProvider.kacheln.size)
+        val vimg = ImageProvider.kacheln(k % ImageProvider.kacheln.size)
+        val img = vimg.image
         val iw = img.getWidth()
         val ih = img.getHeight()
         val sx = 2 * fw / iw
@@ -94,24 +95,36 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
 
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
+    val vimg = ImageProvider.can
+    val img = vimg.image
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
     val s = fw.toDouble / 3000
-    val transform = AffineTransform.getTranslateInstance(o.x, o.y)
+
+    val imgoffx = (img.getWidth.toDouble * s * vimg.centerx).toInt  
+    val imgoffy = (img.getHeight.toDouble * s * vimg.centery).toInt  
+    //println(s"s=$s imgoffx=$imgoffx imgoffy=$imgoffy")
+    val transform = AffineTransform.getTranslateInstance(o.x - imgoffx, o.y - imgoffy)
+    
     transform.concatenate(AffineTransform.getScaleInstance(s, s))
-    graphics.drawImage(ImageProvider.can, transform, null)
+    
+    graphics.drawImage(img, transform, null)
   }
 
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
-    graphics.setColor(Color.GREEN)
+    val videoImage = ImageProvider.robots(dir)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
     val s = fw.toDouble / 3000
-    val transform = AffineTransform.getTranslateInstance(o.x, o.y)
+
+    val imgoffx = (videoImage.image.getWidth.toDouble * s * videoImage.centerx).toInt  
+    val imgoffy = (videoImage.image.getHeight.toDouble * s * videoImage.centery).toInt  
+    
+    val transform = AffineTransform.getTranslateInstance(o.x - imgoffx, o.y - imgoffy)
     transform.concatenate(AffineTransform.getScaleInstance(s, s))
-    graphics.drawImage(ImageProvider.robots(dir), transform, null)
+    graphics.drawImage(videoImage.image, transform, null)
   }
 
 }
@@ -155,13 +168,15 @@ case class SwingDevice(g: Graphics2D => AwtGraphics) extends Device {
 
 }
 
+case class VideoImage(image: BufferedImage, centerx: Double, centery: Double)
+
 object ImageProvider {
 
   private def img(resName: String): BufferedImage = {
     javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(resName))
   }
 
-  lazy val kacheln: List[BufferedImage] = {
+  lazy val kacheln: List[VideoImage] = {
     val imgNames = List(
       "img/kacheln/k01.png",
       "img/kacheln/k02.png",
@@ -169,14 +184,14 @@ object ImageProvider {
       "img/kacheln/k04.png",
       "img/kacheln/k05.png",
       "img/kacheln/k06.png")
-    val images = imgNames.map(name => img(name))
+    val images = imgNames.map(name => VideoImage(img(name), 0.0, 0.0))
     val x = for (i <- 1 to 500) yield {
       images(Random.nextInt(images.size))
     }
     x.toList
   }
 
-  lazy val robots: Map[Direction, BufferedImage] = {
+  lazy val robots: Map[Direction, VideoImage] = {
     val imgNames = List(
       (S, "img/robots/r00.png"),
       (SE, "img/robots/r01.png"),
@@ -186,9 +201,9 @@ object ImageProvider {
       (NW, "img/robots/r05.png"),
       (W, "img/robots/r06.png"),
       (SW, "img/robots/r07.png"))
-    imgNames.map { case (key, name) => (key, img(name)) }.toMap
+    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.5, 0.7)) }.toMap
   }
-  lazy val can: BufferedImage = {
-    img("img/cans/can.png")
+  lazy val can: VideoImage = {
+    VideoImage(img("img/cans/can.png"), 0.5, 0.7)
   }
 }
