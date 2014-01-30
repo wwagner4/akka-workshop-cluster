@@ -19,7 +19,7 @@ trait AwtGraphics extends Graphics {
 
 }
 
-abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder: Int) extends AwtGraphics {
+abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int) extends AwtGraphics {
 
   val _drawArea = drawArea
 
@@ -33,7 +33,7 @@ abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder:
   }
   def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
-    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     (0 to (max.x / 2) - 1).foreach(i => {
       val fw = field.area.w / (max.x / 2)
       val d = i * fw;
@@ -48,12 +48,12 @@ abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int, topBorder:
   }
 }
 
-abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topBorder: Int)
-  extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
+abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int)
+  extends AwtRectGraphics(widthHeightRatio, border) {
 
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
-    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w / (max.x / 2)
     val w = (fw.toDouble / 10).toInt
@@ -61,19 +61,19 @@ abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int, topB
   }
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
     graphics.setColor(Color.GREEN)
-    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     graphics.fillRect(o.x - 5, o.y - 5, 10, 10)
   }
 
 }
 
-abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topBorder: Int)
-  extends AwtRectGraphics(widthHeightRatio, border, topBorder) {
+abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int)
+  extends AwtRectGraphics(widthHeightRatio, border) {
 
   override def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
-    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val fw = field.area.w.toDouble / max.x
     val fh = field.area.h.toDouble / max.y
     var k = 0;
@@ -96,7 +96,7 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
     graphics.setColor(Color.RED)
     val vimg = ImageProvider.can
     val img = vimg.image
-    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
     val s = fw.toDouble / 3000
@@ -112,7 +112,7 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int, topB
 
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
     val videoImage = ImageProvider.robots(dir)
-    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border, topBorder)
+    val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
     val s = fw.toDouble / 3000
