@@ -19,7 +19,7 @@ trait AwtGraphics extends Graphics {
 
 }
 
-abstract class AwtRectGraphics(widthHeightRatio: Double, border: Int) extends AwtGraphics {
+abstract class AwtRectGraphics(widthHeightRatio: Double, border: Double) extends AwtGraphics {
 
   val _drawArea = drawArea
 
@@ -68,7 +68,7 @@ abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int)
 
 }
 
-abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Int)
+abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
   extends AwtRectGraphics(widthHeightRatio, border) {
 
   override def paintField(max: Max) = {
