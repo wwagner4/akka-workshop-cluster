@@ -48,7 +48,7 @@ abstract class AwtRectGraphics(widthHeightRatio: Double, border: Double) extends
   }
 }
 
-abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Int)
+abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Double)
   extends AwtRectGraphics(widthHeightRatio, border) {
 
   def paintCan(pos: Pos, max: Max) = {
