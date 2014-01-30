@@ -42,7 +42,7 @@ object VideoMain extends App {
 
   val device = new SwingDevice(createGraphics)
 
-  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphicsImages(0.7, 20) {
+  def createGraphics(g: Graphics2D): AwtGraphics = new AwtRectGraphicsImages(0.7, 40) {
 
     def graphics: Graphics2D = g
     def drawArea: DrawArea = device.drawArea
