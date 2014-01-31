@@ -23,8 +23,10 @@ object Main extends App {
         ClusterRouterSettings(totalInstances = 100, routeesPath = "/user/main", allowLocalRoutees = true, useRole = None))),
       name = "router")
 
+    val strat = SampleStrategy("01")  
+      
     // my sample evolution actor
-    val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter), "main")
+    val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), "main")
     sampleActor ! Evolve
 
     readLine()

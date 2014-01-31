@@ -4,7 +4,9 @@ import clashcode.robot.{RobotCode, Robot}
 import scala.util.Random
 
 /** A simple strategy for creating a new robot from an existing generation */
-object SampleStrategy {
+case class SampleStrategy(id: String) extends MutationStrategy {
+  
+  def name = "Sample_" + id
 
   /**
    *  Create new members of the next generation.
