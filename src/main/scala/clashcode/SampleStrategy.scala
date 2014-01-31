@@ -7,7 +7,7 @@ import clashcode.robot.Decisions
 /** A simple strategy for creating a new robot from an existing generation */
 case class SampleStrategy(id: String) extends Strategy {
 
-  def name = "Sample_" + id
+  def name = "S_" + id
 
   /**
    *  Create new members of the next generation.
@@ -35,12 +35,12 @@ case class SampleStrategy(id: String) extends Strategy {
   }
 
   // Ignore Robots
-  def receivedRobot(robot: Robot, robots: Seq[Robot]) = robots
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]) = robots
 }
 
 case class MutatingStrategy(id: String, mutationCount: Int) extends Strategy {
 
-  def name = s"Mutating_${id}_${mutationCount}"
+  def name = s"M_${id}_${mutationCount}"
 
   def createNewCode(creatorName: String, currentRobots: Seq[Robot]): RobotCode = {
 
@@ -61,7 +61,7 @@ case class MutatingStrategy(id: String, mutationCount: Int) extends Strategy {
   }
   
   // Ignore Robots
-  def receivedRobot(robot: Robot, robots: Seq[Robot]) = robots
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]) = robots
 
 
 }

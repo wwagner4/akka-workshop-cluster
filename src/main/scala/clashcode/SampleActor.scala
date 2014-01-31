@@ -13,7 +13,7 @@ case object Evolve
 trait Strategy {
   def name: String
   def createNewCode(creatorName: String, currentRobots: Seq[Robot]): RobotCode
-  def receivedRobot(robot: Robot, robots: Seq[Robot]): Seq[Robot]
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]): IndexedSeq[Robot]
 }
 
 class SampleActor(broadcast: ActorRef, strat: Strategy) extends Actor {
@@ -21,7 +21,7 @@ class SampleActor(broadcast: ActorRef, strat: Strategy) extends Actor {
   val myName = strat.name  // created robots should be tagged with this name
 
   // these are my robots!
-  var robots: Seq[Robot] = (1 to 100).map(_ => RobotCode.createRandomCode(myName).evaluate)
+  var robots: IndexedSeq[Robot] = (1 to 100).map(_ => RobotCode.createRandomCode(myName).evaluate)
 
   // send message to myself every 10 seconds
   context.system.scheduler.schedule(FiniteDuration(10, TimeUnit.SECONDS), FiniteDuration(10, TimeUnit.SECONDS)) {
