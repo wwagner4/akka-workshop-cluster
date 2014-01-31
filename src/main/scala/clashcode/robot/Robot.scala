@@ -31,7 +31,7 @@ case class RobotCode(code: Array[Byte], creatorName: String, generations: Map[St
 
     // get the fitness of this robot code
     val decisions = toDecisions
-    val points = Evaluator.evaluate(decisions)
+    val points = Evaluator.evaluate(decisions).points
 
     Robot(this, points)
   }

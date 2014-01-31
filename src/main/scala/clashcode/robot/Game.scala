@@ -3,6 +3,9 @@ package clashcode.robot
 import scala.util.Random
 import scala.collection.mutable
 
+case class FieldPos(x: Int, y: Int)
+case class GameState(points: Int, fpos: FieldPos)
+
 /** represents a field with items which the robot has to collect */
 case class Field(fieldSize: Int, itemCount: Int, items: Seq[Boolean])
 
@@ -30,40 +33,40 @@ class Game(field: Field, random: Random) {
   }
 
   /** pick up item if possible, return points */
-  private def pickUp() : Int = {
+  private def pickUp() : GameState = {
     val index = y * field.fieldSize + x
     if (items(index))
     {
       itemCount -= 1
       items(index) = false
-      10 // success: gain points
+      GameState(10, FieldPos(x, y)) // success: gain points
     }
     else
-      -1 // lost points
+      GameState(-1, FieldPos(x, y)) // lost points
   }
 
   /** move robot if possible */
-  private def move(dx: Int, dy: Int) : Int = {
+  private def move(dx: Int, dy: Int) : GameState = {
     val nextX = x + dx
     val nextY = y + dy
     if (cell(nextX, nextY) != Cell.WALL)
     {
       x = nextX
       y = nextY
-      0 // move successful
+      GameState(0, FieldPos(x, y)) // move successful
     }
     else
-      -5 // lost points
+      GameState(-5, FieldPos(x, y)) // lost points
   }
 
   /** act as robot, returns points gained */
-  def act(decision: Decision) : Int = {
+  def act(decision: Decision) : GameState = {
     decision match {
       case Move(dx, dy) => move(dx, dy)
       case MoveRandom =>
         val randomMove = Decisions.all(random.nextInt(4)).asInstanceOf[Move]
         move(randomMove.x, randomMove.y)
-      case Stay => 0
+      case Stay => GameState(0, FieldPos(x, y))
       case PickUp => pickUp()
     }
   }
