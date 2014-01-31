@@ -23,11 +23,32 @@ object Main extends App {
         ClusterRouterSettings(totalInstances = 100, routeesPath = "/user/main", allowLocalRoutees = true, useRole = None))),
       name = "router")
 
-    val strat = SampleStrategy("01")  
       
-    // my sample evolution actor
-    val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), "main")
-    sampleActor ! Evolve
+    {
+      val strat = SampleStrategy("01")
+      val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+      sampleActor ! Evolve
+    }
+    {
+      val strat = SampleStrategy("02")
+      val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+      sampleActor ! Evolve
+    }
+    {
+      val strat = MutatingStrategy("01", 10)
+      val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+      sampleActor ! Evolve
+    }
+    {
+      val strat = MutatingStrategy("02", 50)
+      val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+      sampleActor ! Evolve
+    }
+    {
+      val strat = MutatingStrategy("03", 100)
+      val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+      sampleActor ! Evolve
+    }
 
     readLine()
     system.shutdown()
