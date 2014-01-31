@@ -1,0 +1,3 @@
+- Candidate ist noch nicht vollständig eliminiert.
+- Code könnte Int statt Byte sein. Grund: Ist einfacher zu behandeln. toByte entfällt. Entsprechende Erklärung kann entfallen.
+  Mir war beispielsweise nicht sofort klar was kann ich alles mit einem Byte machen.  
