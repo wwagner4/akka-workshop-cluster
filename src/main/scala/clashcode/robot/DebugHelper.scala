@@ -1,5 +1,7 @@
 package clashcode.robot
 
+import clashcode.TopName
+
 object DebugHelper {
 
   var firstDebug = true
@@ -20,7 +22,7 @@ object DebugHelper {
     //val vari = candVari.diffCount(robots)
     //println("%5d (%40s %5d) (%40s %5d) %5.3f" format (generation, nf, pf, nl, pl, vari))
     
-    println("- %10d %10s %5d %30s - %s" format (generation, nf, pf, gf, rf.code.code.mkString("")))
+    println("- %10d %10s %5d %30s - %s" format (generation, nf, pf, TopName.name(gf), rf.code.code.mkString("")))
   }
 
 }

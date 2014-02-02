@@ -34,8 +34,10 @@ case class SampleStrategy(id: String) extends Strategy {
     RobotCode(result, creatorName, Seq(left, right))
   }
 
-  // Ignore Robots
-  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]) = robots
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]): IndexedSeq[Robot] = {
+    println("Consumed a robot " + name)
+    robots :+ robot
+  }
 }
 
 case class MutatingStrategy(id: String, mutationCount: Int) extends Strategy {
@@ -59,11 +61,11 @@ case class MutatingStrategy(id: String, mutationCount: Int) extends Strategy {
 
     RobotCode(result, creatorName, Seq(left, right))
   }
-  
-  // Ignore Robots
-  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]) = robots
 
-
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]): IndexedSeq[Robot] = {
+    println("Consumed a robot " + name)
+    robots :+ robot
+  }
 }
 
 
