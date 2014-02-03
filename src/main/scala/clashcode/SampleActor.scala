@@ -10,12 +10,18 @@ import scala.util.Random
 case object Every10Seconds
 case object Evolve
 
-class SampleActor(broadcast: ActorRef) extends Actor {
+trait Strategy {
+  def name: String
+  def createNewCode(creatorName: String, currentRobots: Seq[Robot]): RobotCode
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]): IndexedSeq[Robot]
+}
 
-  val myName = "anonymous" // created robots should be tagged with this name
+class SampleActor(broadcast: ActorRef, strat: Strategy) extends Actor {
+
+  val myName = strat.name  // created robots should be tagged with this name
 
   // these are my robots!
-  var robots = (1 to 100).map(_ => RobotCode.createRandomCode(myName).evaluate)
+  var robots: IndexedSeq[Robot] = (1 to 100).map(_ => RobotCode.createRandomCode(myName).evaluate)
 
   // send message to myself every 10 seconds
   context.system.scheduler.schedule(FiniteDuration(10, TimeUnit.SECONDS), FiniteDuration(10, TimeUnit.SECONDS)) {
@@ -33,13 +39,13 @@ class SampleActor(broadcast: ActorRef) extends Actor {
 
     case robot: Robot =>
       println("I received a robot from someone! what should I do?")
-
+      robots = strat.receivedRobot(robot, robots)
   }
 
   def evolve() = {
 
     // create next generation robots
-    val newRobotCodes = for (i <- 1 to 100) yield SampleStrategy.createNewCode(myName, robots)
+    val newRobotCodes = for (i <- 1 to 100) yield strat.createNewCode(myName, robots)
 
     // evaluate those new robots (using multiple cores)
     val newRobots = newRobotCodes.par.map(_.evaluate)

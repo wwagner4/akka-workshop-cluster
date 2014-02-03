@@ -1,10 +1,13 @@
 package clashcode
 
-import clashcode.robot.{RobotCode, Robot}
+import clashcode.robot.{ RobotCode, Robot }
 import scala.util.Random
+import clashcode.robot.Decisions
 
 /** A simple strategy for creating a new robot from an existing generation */
-object SampleStrategy {
+case class SampleStrategy(id: String) extends Strategy {
+
+  def name = "S_" + id
 
   /**
    *  Create new members of the next generation.
@@ -28,8 +31,41 @@ object SampleStrategy {
     val leftCount = Random.nextInt(left.code.length)
     val result = left.code.take(leftCount) ++ right.code.drop(leftCount)
 
-    // TODO: mutate
     RobotCode(result, creatorName, Seq(left, right))
   }
 
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]): IndexedSeq[Robot] = {
+    println("Consumed a robot " + name)
+    robots :+ robot
+  }
 }
+
+case class MutatingStrategy(id: String, mutationCount: Int) extends Strategy {
+
+  def name = s"M_${id}_${mutationCount}"
+
+  def createNewCode(creatorName: String, currentRobots: Seq[Robot]): RobotCode = {
+
+    // select parents
+    val left = currentRobots(Random.nextInt(currentRobots.size)).code
+    val right = currentRobots(Random.nextInt(currentRobots.size)).code
+
+    // crossover
+    val leftCount = Random.nextInt(left.code.length)
+    val result = left.code.take(leftCount) ++ right.code.drop(leftCount)
+
+    for (_ <- 1 to mutationCount) {
+      val index = Random.nextInt(result.size)
+      result(index) = Random.nextInt(Decisions.count).toByte;
+    }
+
+    RobotCode(result, creatorName, Seq(left, right))
+  }
+
+  def receivedRobot(robot: Robot, robots: IndexedSeq[Robot]): IndexedSeq[Robot] = {
+    println("Consumed a robot " + name)
+    robots :+ robot
+  }
+}
+
+

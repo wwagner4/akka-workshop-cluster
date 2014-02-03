@@ -1,8 +1,8 @@
 package clashcode
 
-import akka.actor.{Props, ActorSystem}
+import akka.actor.{ Props, ActorSystem }
 import akka.routing.BroadcastRouter
-import akka.cluster.routing.{ClusterRouterSettings, ClusterRouterConfig}
+import akka.cluster.routing.{ ClusterRouterSettings, ClusterRouterConfig }
 import com.typesafe.config.ConfigFactory
 
 object Main extends App {
@@ -23,10 +23,37 @@ object Main extends App {
         ClusterRouterSettings(totalInstances = 100, routeesPath = "/user/main", allowLocalRoutees = true, useRole = None))),
       name = "router")
 
-    // my sample evolution actor
-    val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter), "main")
-    sampleActor ! Evolve
+    val id = UniqueID.provideID
+    val sid = "%03d" format id
 
+    scala.util.Random.nextInt(5) match {
+      case 0 => {
+        val strat = SampleStrategy(sid)
+        val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+        sampleActor ! Evolve
+      }
+      case 1 => {
+        val strat = SampleStrategy(sid)
+        val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+        sampleActor ! Evolve
+      }
+      case 2 => {
+        val strat = MutatingStrategy(sid, 10)
+        val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+        sampleActor ! Evolve
+      }
+      case 3 => {
+        val strat = MutatingStrategy(sid, 50)
+        val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+        sampleActor ! Evolve
+      }
+      case 4 => {
+        val strat = MutatingStrategy(sid, 100)
+        val sampleActor = system.actorOf(Props(classOf[SampleActor], broadcastRouter, strat), strat.name)
+        sampleActor ! Evolve
+      }
+    }
+    println(s"Started a new sample actor with id $sid")
     readLine()
     system.shutdown()
   }
