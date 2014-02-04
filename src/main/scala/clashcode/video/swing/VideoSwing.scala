@@ -99,7 +99,7 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
-    val s = fw.toDouble / 3000
+    val s = fw.toDouble / 2000
 
     val imgoffx = (img.getWidth.toDouble * s * vimg.centerx).toInt  
     val imgoffy = (img.getHeight.toDouble * s * vimg.centery).toInt  
@@ -115,7 +115,7 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
-    val s = fw.toDouble / 3000
+    val s = fw.toDouble / 2000
 
     val imgoffx = (videoImage.image.getWidth.toDouble * s * videoImage.centerx).toInt  
     val imgoffy = (videoImage.image.getHeight.toDouble * s * videoImage.centery).toInt  
@@ -199,9 +199,9 @@ object ImageProvider {
       (NW, "img/robots/r05.png"),
       (W, "img/robots/r06.png"),
       (SW, "img/robots/r07.png"))
-    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.45, 0.7)) }.toMap
+    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.5, 0.6)) }.toMap
   }
   lazy val can: VideoImage = {
-    VideoImage(img("img/cans/can.png"), 0.5, 0.7)
+    VideoImage(img("img/cans/can.png"), 0.5, 0.5)
   }
 }
