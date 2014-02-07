@@ -19,7 +19,7 @@ object Evaluator {
   lazy private val testFields = (0 until 200).map(seed => createRandomField(new Random(seed)))
 
   /** create deterministic random field from given random seed */
-  private def createRandomField(random: Random) = {
+  private def createRandomField(random: Random): Field = {
     var fieldItemCount = 0
     val items = Array.fill(fieldSize * fieldSize)(false)
     while (fieldItemCount < itemCount) {

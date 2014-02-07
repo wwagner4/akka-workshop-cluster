@@ -30,14 +30,18 @@ case class RobotCode(code: Array[Byte], creatorName: String, generations: Map[St
   def evaluate : Robot = {
 
     // get the fitness of this robot code
-    val decisions = toDecisions
+    val decisions = Converter.toDecisions(code)
     val points = Evaluator.evaluate(decisions).points
 
     Robot(this, points)
   }
 
-  /** get decisions from this code */
-  private def toDecisions : IndexedSeq[Decision] = {
+}
+
+
+object Converter {
+  
+  def toDecisions(code: Array[Byte]) : IndexedSeq[Decision] = {
     try {
       code.map(decisionIndex => Decisions.all(decisionIndex))
     }
