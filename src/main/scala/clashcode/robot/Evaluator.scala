@@ -14,27 +14,15 @@ object Evaluator {
 
   private val fieldSize = 10;
 
-  private val itemCount = fieldSize * fieldSize / 2; // 50% chance for a field to have an item
-
-  lazy private val testFields = (0 until 200).map(seed => createRandomField(new Random(seed)))
+  lazy private val testFields = (0 until 200).map(seed => FieldFactory.createRandomField(new Random(seed), fieldSize))
 
   /** create deterministic random field from given random seed */
-  private def createRandomField(random: Random): Field = {
-    var fieldItemCount = 0
-    val items = Array.fill(fieldSize * fieldSize)(false)
-    while (fieldItemCount < itemCount) {
-      val index = random.nextInt(items.length)
-      if (!items(index)) {
-        items(index) = true
-        fieldItemCount += 1
-      }
-    }
-    Field(fieldSize, itemCount, items)
-  }
 
-  /** get points for given candidate
-    * 20 trials on different fields, */
-  def evaluate(decisions: IndexedSeq[Decision]) : EvalResult = {
+  /**
+   * get points for given candidate
+   * 20 trials on different fields,
+   */
+  def evaluate(decisions: IndexedSeq[Decision]): EvalResult = {
     val moveRandom = new Random(0)
     var points = 0
     var path = List.empty[FieldPos]
@@ -51,10 +39,29 @@ object Evaluator {
         val decision = decisions(index)
         val gs = game.act(decision)
         points += gs.points
-        path = gs.fpos :: path 
+        path = gs.fpos :: path
       }
     })
     EvalResult(points, path.reverse)
+  }
+
+}
+
+object FieldFactory {
+  def createRandomField(random: Random, fieldSize: Int): Field = {
+    // 50% chance for a field to have an item
+    val itemCount = fieldSize * fieldSize / 2
+
+    var fieldItemCount = 0
+    val items = Array.fill(fieldSize * fieldSize)(false)
+    while (fieldItemCount < itemCount) {
+      val index = random.nextInt(items.length)
+      if (!items(index)) {
+        items(index) = true
+        fieldItemCount += 1
+      }
+    }
+    Field(fieldSize, itemCount, items)
   }
 
 }
