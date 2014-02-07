@@ -23,26 +23,38 @@ object Evaluator {
    * 20 trials on different fields,
    */
   def evaluate(decisions: IndexedSeq[Decision]): EvalResult = {
-    val moveRandom = new Random(0)
+    val ran = new Random(0)
     var points = 0
     var path = List.empty[FieldPos]
 
     // test on 20 fields
     testFields.foreach(testField => {
-      val game = new Game(testField, moveRandom)
-
-      // max 200 robot turns
-      var turns = 0
-      while (turns < 200 && game.itemCount > 0) {
-        turns += 1
-        val index = game.situationIndex
-        val decision = decisions(index)
-        val gs = game.act(decision)
-        points += gs.points
-        path = gs.fpos :: path
-      }
+      val re = FieldEvaluator.evaluate(decisions, testField, ran)
+      points += re.points
+      path = re.path ::: path
     })
     EvalResult(points, path.reverse)
+  }
+
+}
+
+object FieldEvaluator {
+
+  def evaluate(decisions: IndexedSeq[Decision], testField: Field, moveRandom: Random): EvalResult = {
+    var points = 0
+    var path = List.empty[FieldPos]
+    val game = new Game(testField, moveRandom)
+    // max 200 robot turns
+    var turns = 0
+    while (turns < 200 && game.itemCount > 0) {
+      turns += 1
+      val index = game.situationIndex
+      val decision = decisions(index)
+      val gs = game.act(decision)
+      points += gs.points
+      path = gs.fpos :: path
+    }
+    EvalResult(points, path)
   }
 
 }
