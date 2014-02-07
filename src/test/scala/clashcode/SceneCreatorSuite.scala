@@ -7,6 +7,7 @@ import clashcode.robot.FieldPos
 import scala.util.Random
 import clashcode.robot.FieldFactory
 import clashcode.robot.FieldEvaluator
+import clashcode.video._
 
 class SceneCreatorSuite extends FunSuite {
 
@@ -32,13 +33,35 @@ class SceneCreatorSuite extends FunSuite {
   test("Split path to steps") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
     val path = PathUtil.strCodeToPath(strCode, 200).take(4)
-    val steps: List[FieldStep] = pathToSteps(path)
+    val steps: List[FieldStep] = PathUtil.pathToSteps(path)
     val expectedSteps = List(
       FieldStep(FieldPos(4, 0), FieldPos(4, 1)),
       FieldStep(FieldPos(4, 1), FieldPos(4, 1)),
       FieldStep(FieldPos(4, 1), FieldPos(5, 1)))
     assert(steps === expectedSteps)
   }
+
+  val dummyCans = Set.empty[Pos]
+
+  ignore("step [0 0] [0 1] robot E") {
+    val step = FieldStep(FieldPos(0, 0), FieldPos(0, 1))
+    val robot = RobotView(Pos(1, 1), N)
+    val stages: List[Stage] = stepToStages(step, robot)
+    val expectedStages = List(
+      Stage(RobotView(Pos(1, 1), E), dummyCans),
+      Stage(RobotView(Pos(1, 1), SE), dummyCans),
+      Stage(RobotView(Pos(1, 1), S), dummyCans),
+      Stage(RobotView(Pos(1, 2), S), dummyCans),
+      Stage(RobotView(Pos(1, 3), S), dummyCans))
+      assert(stages === expectedStages)
+  }
+
+  def stepToStages(step: FieldStep, robot: RobotView): List[Stage] = ???
+}
+
+case class FieldStep(from: FieldPos, to: FieldPos)
+
+case object PathUtil {
 
   def pathToSteps(path: List[FieldPos]): List[FieldStep] = {
     path match {
@@ -47,11 +70,6 @@ class SceneCreatorSuite extends FunSuite {
       case a :: b :: r => FieldStep(a, b) :: pathToSteps(b :: r)
     }
   }
-}
-
-case class FieldStep(from: FieldPos, to: FieldPos)
-
-case object PathUtil {
 
   def strCodeToPath(strCode: String, seed: Long): List[FieldPos] = {
     val code: Array[Byte] = strCode.map(c => (c - 48).toByte).toArray
@@ -60,6 +78,6 @@ case object PathUtil {
     val f = FieldFactory.createRandomField(ran, 10)
     FieldEvaluator.evaluate(decisions, f, ran).path
   }
-  
+
 }
   

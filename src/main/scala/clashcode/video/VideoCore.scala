@@ -43,9 +43,9 @@ case object SW extends Direction
 case object W extends Direction
 case object NW extends Direction
 
-case class Robot(pos: Pos, dir: Direction)
+case class RobotView(pos: Pos, dir: Direction)
 
-case class Stage(robot: Robot, cans: Set[Pos])
+case class Stage(robot: RobotView, cans: Set[Pos])
 
 trait Device {
   type PaintFunc = (Graphics, Stage) => Unit
