@@ -30,6 +30,12 @@ class SceneCreatorSuite extends FunSuite {
     assert(path.take(10) === List(FieldPos(4, 0), FieldPos(4, 1), FieldPos(4, 1), FieldPos(5, 1), FieldPos(5, 1), FieldPos(5, 2), FieldPos(5, 3), FieldPos(5, 3), FieldPos(4, 3), FieldPos(4, 4)))
   }
 
+  test("String code to scenes") {
+    val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
+    val stages = strCodeToStages(strCode, 24234L)
+    assert(stages.size > 100)
+  }
+  
   test("Split path to steps") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
     val path = PathUtil.strCodeToPath(strCode, 200).take(4)
@@ -44,16 +50,29 @@ class SceneCreatorSuite extends FunSuite {
   val dummyCans = Set.empty[Pos]
   val fieldSize = 10;
 
-  test("step [0 0] [0 1] robot E") {
+  test("step [0 0] [0 1] robot N") {
     val step = FieldStep(FieldPos(0, 0), FieldPos(0, 1))
     val robot = RobotView(Pos(1, 1), N)
     val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize)
     val expectedStages = List(
+      Stage(RobotView(Pos(1, 1), NE), dummyCans),
       Stage(RobotView(Pos(1, 1), E), dummyCans),
       Stage(RobotView(Pos(1, 1), SE), dummyCans),
       Stage(RobotView(Pos(1, 1), S), dummyCans),
       Stage(RobotView(Pos(1, 2), S), dummyCans),
       Stage(RobotView(Pos(1, 3), S), dummyCans))
+    assert(stages === expectedStages)
+  }
+
+  test("step [0 0] [1 0] robot N") {
+    val step = FieldStep(FieldPos(0, 0), FieldPos(1, 0))
+    val robot = RobotView(Pos(1, 1), N)
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize)
+    val expectedStages = List(
+      Stage(RobotView(Pos(1, 1), NE), dummyCans),
+      Stage(RobotView(Pos(1, 1), E), dummyCans),
+      Stage(RobotView(Pos(2, 1), E), dummyCans),
+      Stage(RobotView(Pos(3, 1), E), dummyCans))
     assert(stages === expectedStages)
   }
 
@@ -124,6 +143,29 @@ class SceneCreatorSuite extends FunSuite {
         assert(l === s.expected)
       }
     }
+  }
+  
+
+  def strCodeToStages(strCode: String, seed: Long): List[Stage] = {
+
+    def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
+      case Nil => Nil
+      case s :: r => {
+        val stages = PathUtil.stepToStages(s, robot, fieldSize)
+        val lastRobot = stages.last.robot
+        stages ::: stepsToStages(r, lastRobot, fieldSize)
+      }
+    }
+
+    val path = PathUtil.strCodeToPath(strCode, 2)
+    val steps = PathUtil.pathToSteps(path);
+    if (steps.size == 0) Nil
+    else {
+      val startField = steps(0).from
+      val startRobot = RobotView(Pos(startField.x * 2 + 1, startField.y * 2 + 1), S)
+      stepsToStages(steps, startRobot, fieldSize)
+    }
+
   }
 
 }
