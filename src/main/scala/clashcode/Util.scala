@@ -22,6 +22,8 @@ object UniqueID {
 
   def provideID: Int = {
 
+    import scala.language.reflectiveCalls
+
     def using[A <: { def close(): Unit }, B](param: A)(f: A => B): B =
       try { f(param) } finally { param.close() }
 
@@ -41,7 +43,7 @@ object UniqueID {
         oin.readObject.asInstanceOf[Int];
       }
     }
-    
+
     val re = if (!idfile.exists()) 0
     else readIdfile
     writeIdfile(re + 1)

@@ -8,9 +8,7 @@ import clashcode.robot.Converter
 
 case object SceneCreator {
 
-  val fieldSize = 10
-
-  def stringCodeToStages(strCode: String, seed: Long): List[Stage] = {
+  def stringCodeToStages(strCode: String, fieldSize: Int, seed: Long): List[Stage] = {
     val ran = new Random(seed)
     
     def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {

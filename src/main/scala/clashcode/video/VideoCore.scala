@@ -4,7 +4,8 @@ import clashcode.video.swing.SwingDevice
 
 object Video {
 
-  def play(device: Device, stages: List[Stage], max: Max, framesPerSecond: Int): Unit = {
+  def play(device: Device, stages: List[Stage], fieldSize: Int, framesPerSecond: Int): Unit = {
+    val max = Max(2 * fieldSize, 2 * fieldSize)
     while (true) {
       for (s <- stages) {
         device.paintStage(s, paintStage(max)(_, _))
