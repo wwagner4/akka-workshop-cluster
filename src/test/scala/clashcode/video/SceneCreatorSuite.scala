@@ -5,6 +5,7 @@ import clashcode.robot.Evaluator
 import clashcode.robot.Converter
 import clashcode.robot.FieldPos
 import clashcode.video._
+import scala.util.Random
 
 class SceneCreatorSuite extends FunSuite {
 
@@ -22,7 +23,7 @@ class SceneCreatorSuite extends FunSuite {
 
   test("Create path from result with PathUtil") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
-    val path = PathUtil.strCodeToPath(strCode, 200)
+    val path = PathUtil.strCodeToPath(strCode, new Random(200))
     assert(path.length === 200)
     assert(path.take(10) === List(FieldPos(4, 0), FieldPos(4, 1), FieldPos(4, 1), FieldPos(5, 1), FieldPos(5, 1), FieldPos(5, 2), FieldPos(5, 3), FieldPos(5, 3), FieldPos(4, 3), FieldPos(4, 4)))
   }
@@ -35,7 +36,7 @@ class SceneCreatorSuite extends FunSuite {
   
   test("Split path to steps") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
-    val path = PathUtil.strCodeToPath(strCode, 200).take(4)
+    val path = PathUtil.strCodeToPath(strCode, new Random(200)).take(4)
     val steps: List[FieldStep] = PathUtil.pathToSteps(path)
     val expectedSteps = List(
       FieldStep(FieldPos(4, 0), FieldPos(4, 1)),
@@ -50,7 +51,7 @@ class SceneCreatorSuite extends FunSuite {
   test("step [0 0] [0 1] robot N") {
     val step = FieldStep(FieldPos(0, 0), FieldPos(0, 1))
     val robot = RobotView(Pos(1, 1), N)
-    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize)
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(2))
     val expectedStages = List(
       Stage(RobotView(Pos(1, 1), NE), dummyCans),
       Stage(RobotView(Pos(1, 1), E), dummyCans),
@@ -64,7 +65,7 @@ class SceneCreatorSuite extends FunSuite {
   test("step [0 0] [1 0] robot N") {
     val step = FieldStep(FieldPos(0, 0), FieldPos(1, 0))
     val robot = RobotView(Pos(1, 1), N)
-    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize)
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123))
     val expectedStages = List(
       Stage(RobotView(Pos(1, 1), NE), dummyCans),
       Stage(RobotView(Pos(1, 1), E), dummyCans),

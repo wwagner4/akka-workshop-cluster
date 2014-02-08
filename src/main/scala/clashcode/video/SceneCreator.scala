@@ -9,19 +9,20 @@ import clashcode.robot.Converter
 case object SceneCreator {
 
   val fieldSize = 10
-  
-  def stringCodeToStages(strCode: String, seed: Long): List[Stage] = {
 
+  def stringCodeToStages(strCode: String, seed: Long): List[Stage] = {
+    val ran = new Random(seed)
+    
     def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
       case Nil => Nil
       case s :: r => {
-        val stages = PathUtil.stepToStages(s, robot, fieldSize)
+        val stages = PathUtil.stepToStages(s, robot, fieldSize, ran)
         val lastRobot = stages.last.robot
         stages ::: stepsToStages(r, lastRobot, fieldSize)
       }
     }
 
-    val path = PathUtil.strCodeToPath(strCode, 2)
+    val path = PathUtil.strCodeToPath(strCode, ran)
     val steps = PathUtil.pathToSteps(path);
     if (steps.size == 0) Nil
     else {
@@ -32,8 +33,6 @@ case object SceneCreator {
 
   }
 
-  
-  
 }
 
 case class FieldStep(from: FieldPos, to: FieldPos)
@@ -98,15 +97,14 @@ case object PathUtil {
     }
   }
 
-  def strCodeToPath(strCode: String, seed: Long): List[FieldPos] = {
+  def strCodeToPath(strCode: String, ran: Random): List[FieldPos] = {
     val code: Array[Byte] = strCode.map(c => (c - 48).toByte).toArray
     val decisions = Converter.toDecisions(code)
-    val ran = new Random(seed)
     val f = FieldFactory.createRandomField(ran, 10)
     FieldEvaluator.evaluate(decisions, f, ran).path
   }
 
-  def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int): List[Stage] = {
+  def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int, ran: Random): List[Stage] = {
     def turn(nextDir: Direction): List[Stage] = {
       val prevDir = robot.dir
       val diff = DirectionUtil.diff(prevDir, nextDir)
@@ -124,11 +122,13 @@ case object PathUtil {
         Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), dummyCans))
       case W => List(
         Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), dummyCans),
-        Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), dummyCans))
+        Stage(RobotView(Pos(robot.pos.x - 2, robot.pos.y), nextDir), dummyCans))
       case _ => throw new IllegalArgumentException(s"Robot can only move N, E, S or W. Not $nextDir")
     }
     if (step.from.x == step.to.x && step.from.y == step.to.y) {
-      val nextRobot = RobotView(robot.pos, DirectionUtil.turnRight(robot.dir))
+      val nextDir = if (ran.nextBoolean) DirectionUtil.turnRight(robot.dir)
+      else DirectionUtil.turnLeft(robot.dir)
+      val nextRobot = RobotView(robot.pos, nextDir)
       // TODO The cans must come somehow out of the step to be able to check if cans where collected
       List(Stage(robot, dummyCans))
     } else {
