@@ -48,4 +48,14 @@ class RobotSuite extends FeatureSpec with Matchers {
     }
 
   }
+  
+  feature("Item converter") {
+    scenario("field with size 3 has one item at [2, 1]") {
+      val items = List(false, false, false, false, false, true, false, false, false)
+      val citems = ItemConverter.convertItems(items, 3)
+      items.size should be (9)
+      citems should be (Set(FieldPos(2, 1))) 
+    }
+  }
+
 }

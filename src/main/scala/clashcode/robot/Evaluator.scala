@@ -40,10 +40,10 @@ object Evaluator {
 
 object FieldEvaluator {
 
-  def evaluate(decisions: IndexedSeq[Decision], testField: Field, moveRandom: Random): EvalResult = {
+  def evaluate(decisions: IndexedSeq[Decision], testField: Field, ran: Random): EvalResult = {
     var points = 0
     var path = List.empty[FieldState]
-    val game = new Game(testField, moveRandom)
+    val game = new Game(testField, ran)
     // max 200 robot turns
     var turns = 0
     while (turns < 200 && game.itemCount > 0) {
@@ -54,7 +54,7 @@ object FieldEvaluator {
       points += gs.points
       path = gs.state :: path
     }
-    EvalResult(points, path)
+    EvalResult(points, path.reverse)
   }
 
 }

@@ -101,7 +101,7 @@ case object PathUtil {
     FieldEvaluator.evaluate(decisions, f, ran).path
   }
 
-  def mapPos(in: Set[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1))
+  def mapPos(in: List[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1)).toSet
   
   def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int, ran: Random): List[Stage] = {
     def turn(nextDir: Direction): List[Stage] = {

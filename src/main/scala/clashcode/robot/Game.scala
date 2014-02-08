@@ -4,7 +4,7 @@ import scala.util.Random
 import scala.collection.mutable
 
 case class FieldPos(x: Int, y: Int)
-case class FieldState(robot: FieldPos, items: Set[FieldPos])
+case class FieldState(robot: FieldPos, items: List[FieldPos])
 case class GameState(points: Int, state: FieldState)
 
 /** represents a field with items which the robot has to collect */
@@ -39,22 +39,11 @@ class Game(field: Field, random: Random) {
     if (items(index)) {
       itemCount -= 1
       items(index) = false
-      GameState(10, FieldState(FieldPos(x, y), convertItems)) // success: gain points
+      GameState(10, FieldState(FieldPos(x, y), ItemConverter.convertItems(items.toList, field.fieldSize))) // success: gain points
     } else
-      GameState(-1, FieldState(FieldPos(x, y), convertItems)) // lost points
+      GameState(-1, FieldState(FieldPos(x, y), ItemConverter.convertItems(items.toList, field.fieldSize))) // lost points
   }
 
-  def convertItems: Set[FieldPos] = {
-    val re = for (
-      x <- (0 until field.fieldSize);
-      y <- (0 until field.fieldSize)
-    ) yield {
-      val index = y * field.fieldSize + x
-      if (items(index)) None
-      else Some(FieldPos(x, y))
-    }
-    re.flatten.toSet
-  }
 
   /** move robot if possible */
   private def move(dx: Int, dy: Int): GameState = {
@@ -63,9 +52,9 @@ class Game(field: Field, random: Random) {
     if (cell(nextX, nextY) != Cell.WALL) {
       x = nextX
       y = nextY
-      GameState(0, FieldState(FieldPos(x, y), convertItems)) // move successful
+      GameState(0, FieldState(FieldPos(x, y), ItemConverter.convertItems(items.toList, field.fieldSize))) // move successful
     } else
-      GameState(-5, FieldState(FieldPos(x, y), convertItems)) // lost points
+      GameState(-5, FieldState(FieldPos(x, y), ItemConverter.convertItems(items.toList, field.fieldSize))) // lost points
   }
 
   /** act as robot, returns points gained */
@@ -75,10 +64,25 @@ class Game(field: Field, random: Random) {
       case MoveRandom =>
         val randomMove = Decisions.all(random.nextInt(4)).asInstanceOf[Move]
         move(randomMove.x, randomMove.y)
-      case Stay => GameState(0, FieldState(FieldPos(x, y), convertItems))
+      case Stay => GameState(0, FieldState(FieldPos(x, y), ItemConverter.convertItems(items.toList, field.fieldSize)))
       case PickUp => pickUp()
     }
   }
 
 }
 
+case object ItemConverter {
+  def convertItems(items: List[Boolean], fieldSize: Int): List[FieldPos] = {
+    val re = for (
+      y <- (0 until fieldSize);
+      x <- (0 until fieldSize)
+    ) yield {
+      val index = y * fieldSize + x
+      if (items(index)) Some(FieldPos(x, y))
+      else None
+    }
+    val re1 = re.flatten
+    re1.toList
+  }
+  
+}
