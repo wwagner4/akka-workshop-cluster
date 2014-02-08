@@ -47,7 +47,7 @@ class SceneCreatorSuite extends FunSuite {
   test("step [0 0] [0 1] robot E") {
     val step = FieldStep(FieldPos(0, 0), FieldPos(0, 1))
     val robot = RobotView(Pos(1, 1), N)
-    val stages: List[Stage] = stepToStages(step, robot, fieldSize)
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize)
     val expectedStages = List(
       Stage(RobotView(Pos(1, 1), E), dummyCans),
       Stage(RobotView(Pos(1, 1), SE), dummyCans),
@@ -70,7 +70,7 @@ class SceneCreatorSuite extends FunSuite {
     for (ndr <- validSteps) {
       test(s"next direction valid step $ndr") {
         val s = FieldStep(FieldPos(ndr.fromx, ndr.fromy), FieldPos(ndr.tox, ndr.toy))
-        val nd = nextDirection(s, fieldSize)
+        val nd = PathUtil.nextDirection(s, fieldSize)
         assert(nd === ndr.expectedDir)
       }
     }
@@ -89,7 +89,7 @@ class SceneCreatorSuite extends FunSuite {
       test(s"next direction valid step $ndr") {
         val s = FieldStep(FieldPos(ndr.fromx, ndr.fromy), FieldPos(ndr.tox, ndr.toy))
         intercept[IllegalArgumentException] {
-          nextDirection(s, fieldSize)
+          PathUtil.nextDirection(s, fieldSize)
         }
       }
     }
@@ -126,63 +126,6 @@ class SceneCreatorSuite extends FunSuite {
     }
   }
 
-  def nextDirection(step: FieldStep, fieldSize: Int): Direction = {
-    def assertInBounds(value: Int): Unit = {
-      if (value < 0 || value >= fieldSize) throw new IllegalArgumentException(s"Value $value is out of bound for field size $fieldSize. $step")
-    }
-    assertInBounds(step.from.x)
-    assertInBounds(step.from.y)
-    assertInBounds(step.to.x)
-    assertInBounds(step.to.y)
-    if (step.from.x == step.to.x) {
-      if (step.from.y > step.to.y) {
-        if (step.from.y - step.to.y > 1) throw new IllegalArgumentException(s"The step in y direction is greater than one. $step")
-        else N
-      } else if (step.from.y < step.to.y) {
-        if (step.to.y - step.from.y > 1) throw new IllegalArgumentException(s"The step in y direction is greater than one. $step")
-        else S
-      } else throw new IllegalArgumentException(s"No movement. $step")
-    } else if (step.from.y == step.to.y) {
-      if (step.from.x > step.to.x) {
-        if (step.from.x - step.to.x > 1) throw new IllegalArgumentException(s"The step in x direction is greater than one. $step")
-        else W
-      } else if (step.from.x < step.to.x) {
-        if (step.to.x - step.from.x > 1) throw new IllegalArgumentException(s"The step in x direction is greater than one. $step")
-        else E
-      } else throw new IllegalArgumentException(s"No movement. $step")
-    } else throw new IllegalArgumentException(s"Moved along two axes. $step")
-  }
-
-  def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int): List[Stage] = {
-    def turn(nextDir: Direction): List[Stage] = {
-      val prevDir = robot.dir
-      val diff = DirectionUtil.diff(prevDir, nextDir)
-      DirectionUtil.turnList(robot.dir, diff).map(d => Stage(RobotView(robot.pos, d), dummyCans))
-    }
-    def move(nextDir: Direction): List[Stage] = nextDir match {
-      case N => List(
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), dummyCans),
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), dummyCans))
-      case E => List(
-        Stage(RobotView(Pos(robot.pos.x + 1, robot.pos.y), nextDir), dummyCans),
-        Stage(RobotView(Pos(robot.pos.x + 2, robot.pos.y), nextDir), dummyCans))
-      case S => List(
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 1), nextDir), dummyCans),
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), dummyCans))
-      case W => List(
-        Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), dummyCans),
-        Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), dummyCans))
-      case _ => throw new IllegalArgumentException(s"Robot can only move N, E, S or W. Not $nextDir")
-    }
-    if (step.from.x == step.to.x && step.from.y == step.to.y) {
-      val nextRobot = RobotView(robot.pos, DirectionUtil.turnRight(robot.dir))
-      // TODO The cans must come somehow out of the step to be able to check if cans where collected
-      List(Stage(robot, dummyCans))
-    } else {
-      val ndir: Direction = nextDirection(step, fieldSize)
-      turn(ndir) ::: move(ndir)
-    }
-  }
 }
 
 case class FieldStep(from: FieldPos, to: FieldPos)
@@ -237,6 +180,8 @@ case object DirectionUtil {
 
 case object PathUtil {
 
+  val dummyCans = Set.empty[Pos]
+
   def pathToSteps(path: List[FieldPos]): List[FieldStep] = {
     path match {
       case Nil => throw new IllegalStateException("path must contain at least two positions")
@@ -253,5 +198,62 @@ case object PathUtil {
     FieldEvaluator.evaluate(decisions, f, ran).path
   }
 
+  def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int): List[Stage] = {
+    def turn(nextDir: Direction): List[Stage] = {
+      val prevDir = robot.dir
+      val diff = DirectionUtil.diff(prevDir, nextDir)
+      DirectionUtil.turnList(robot.dir, diff).map(d => Stage(RobotView(robot.pos, d), dummyCans))
+    }
+    def move(nextDir: Direction): List[Stage] = nextDir match {
+      case N => List(
+        Stage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), dummyCans),
+        Stage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), dummyCans))
+      case E => List(
+        Stage(RobotView(Pos(robot.pos.x + 1, robot.pos.y), nextDir), dummyCans),
+        Stage(RobotView(Pos(robot.pos.x + 2, robot.pos.y), nextDir), dummyCans))
+      case S => List(
+        Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 1), nextDir), dummyCans),
+        Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), dummyCans))
+      case W => List(
+        Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), dummyCans),
+        Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), dummyCans))
+      case _ => throw new IllegalArgumentException(s"Robot can only move N, E, S or W. Not $nextDir")
+    }
+    if (step.from.x == step.to.x && step.from.y == step.to.y) {
+      val nextRobot = RobotView(robot.pos, DirectionUtil.turnRight(robot.dir))
+      // TODO The cans must come somehow out of the step to be able to check if cans where collected
+      List(Stage(robot, dummyCans))
+    } else {
+      val ndir: Direction = nextDirection(step, fieldSize)
+      turn(ndir) ::: move(ndir)
+    }
+  }
+
+  def nextDirection(step: FieldStep, fieldSize: Int): Direction = {
+    def assertInBounds(value: Int): Unit = {
+      if (value < 0 || value >= fieldSize) throw new IllegalArgumentException(s"Value $value is out of bound for field size $fieldSize. $step")
+    }
+    assertInBounds(step.from.x)
+    assertInBounds(step.from.y)
+    assertInBounds(step.to.x)
+    assertInBounds(step.to.y)
+    if (step.from.x == step.to.x) {
+      if (step.from.y > step.to.y) {
+        if (step.from.y - step.to.y > 1) throw new IllegalArgumentException(s"The step in y direction is greater than one. $step")
+        else N
+      } else if (step.from.y < step.to.y) {
+        if (step.to.y - step.from.y > 1) throw new IllegalArgumentException(s"The step in y direction is greater than one. $step")
+        else S
+      } else throw new IllegalArgumentException(s"No movement. $step")
+    } else if (step.from.y == step.to.y) {
+      if (step.from.x > step.to.x) {
+        if (step.from.x - step.to.x > 1) throw new IllegalArgumentException(s"The step in x direction is greater than one. $step")
+        else W
+      } else if (step.from.x < step.to.x) {
+        if (step.to.x - step.from.x > 1) throw new IllegalArgumentException(s"The step in x direction is greater than one. $step")
+        else E
+      } else throw new IllegalArgumentException(s"No movement. $step")
+    } else throw new IllegalArgumentException(s"Moved along two axes. $step")
+  }
 }
   
