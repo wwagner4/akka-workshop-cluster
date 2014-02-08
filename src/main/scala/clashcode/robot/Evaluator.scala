@@ -2,7 +2,7 @@ package clashcode.robot
 
 import scala.util.Random
 
-case class EvalResult(points: Int, path: List[FieldPos])
+case class EvalResult(points: Int, path: List[FieldState])
 
 /**
  * The evaluator checks how well a robot performs and calculates its points (=fitness).
@@ -25,7 +25,7 @@ object Evaluator {
   def evaluate(decisions: IndexedSeq[Decision]): EvalResult = {
     val ran = new Random(0)
     var points = 0
-    var path = List.empty[FieldPos]
+    var path = List.empty[FieldState]
 
     // test on 20 fields
     testFields.foreach(testField => {
@@ -42,7 +42,7 @@ object FieldEvaluator {
 
   def evaluate(decisions: IndexedSeq[Decision], testField: Field, moveRandom: Random): EvalResult = {
     var points = 0
-    var path = List.empty[FieldPos]
+    var path = List.empty[FieldState]
     val game = new Game(testField, moveRandom)
     // max 200 robot turns
     var turns = 0
@@ -52,7 +52,7 @@ object FieldEvaluator {
       val decision = decisions(index)
       val gs = game.act(decision)
       points += gs.points
-      path = gs.fpos :: path
+      path = gs.state :: path
     }
     EvalResult(points, path)
   }
