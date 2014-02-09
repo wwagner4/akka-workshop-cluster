@@ -23,8 +23,7 @@ case class Stage(robot: RobotView, cans: Set[Pos])
 
 trait Device {
 
-  type PaintFunc = (Graphics, Stage) => Unit
-
+  // Define how to paint a stage on that device
   def paintStage(stage: Stage)
 
   def postPaintStage: Unit = {
@@ -52,7 +51,23 @@ trait Device {
     println("finished play")
   }
 
-  protected def paintStageToGraphics(g: Graphics, stage: Stage): Unit = {
+}
+
+
+/**
+ * Abstraction level for Graphics
+ * Can, but must not be used from Device implementations
+ */
+trait CommonGraphics {
+  def drawArea: DrawArea
+  def clear: Unit
+  def paintField(max: Max)
+  def paintCan(pos: Pos, max: Max)
+  def paintRobot(pos: Pos, dir: Direction, max: Max)
+}
+
+object CommonGraphicsUtil {
+  def paintStage(g: CommonGraphics, stage: Stage, max: Max): Unit = {
     g.clear
     val visibleCans = stage.cans - stage.robot.pos
     g.paintField(max)
@@ -62,14 +77,5 @@ trait Device {
     g.paintRobot(stage.robot.pos, stage.robot.dir, max)
   }
 
-}
-
-trait Graphics {
-  def drawArea: DrawArea
-  def clear: Unit
-  def paintField(max: Max)
-  def paintCan(pos: Pos, max: Max)
-  def paintRobot(pos: Pos, dir: Direction, max: Max)
-}
-
   
+}  
