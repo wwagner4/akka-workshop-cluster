@@ -25,7 +25,7 @@ case class SwingDeviceFactory(framesPerSecond: Int, fieldSize: Int) {
   private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, fieldSize, createGraphics)
 
   private def createGraphics(g: Graphics2D): AwtGraphics = {
-    new ImageAwtGraphics(0.6, 0.05) {
+    new ImageAwtGraphics(ImageProvider_V02, 0.6, 0.05) {
       def graphics: Graphics2D = g
       def drawArea: DrawArea = _device.determineCalcArea
     }

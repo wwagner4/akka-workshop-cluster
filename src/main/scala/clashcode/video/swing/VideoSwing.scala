@@ -106,7 +106,7 @@ abstract class SimpleAwtGraphics(widthHeightRatio: Double, border: Double)
 
 }
 
-abstract class ImageAwtGraphics(widthHeightRatio: Double, border: Double)
+abstract class ImageAwtGraphics(imgProvider: ImageProvider, widthHeightRatio: Double, border: Double)
   extends RectangularAwtGraphics(widthHeightRatio, border) {
 
   override def paintField(max: Max) = {
@@ -117,7 +117,7 @@ abstract class ImageAwtGraphics(widthHeightRatio: Double, border: Double)
     var k = 0;
     for (i <- (0 until (max.x / 2))) {
       for (j <- (0 until (max.y / 2))) {
-        val img = ImageProvider.kacheln(k % ImageProvider.kacheln.size)
+        val img = imgProvider.kacheln(k % imgProvider.kacheln.size)
         val iw = img.getWidth()
         val ih = img.getHeight()
         val sx = 2 * fw / iw
@@ -132,7 +132,7 @@ abstract class ImageAwtGraphics(widthHeightRatio: Double, border: Double)
 
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
-    val vimg = ImageProvider.can
+    val vimg = imgProvider.can
     val img = vimg.image
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
@@ -149,7 +149,7 @@ abstract class ImageAwtGraphics(widthHeightRatio: Double, border: Double)
   }
 
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
-    val videoImage = ImageProvider.robots(dir)
+    val videoImage = imgProvider.robots(dir)
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
@@ -167,7 +167,16 @@ abstract class ImageAwtGraphics(widthHeightRatio: Double, border: Double)
 
 case class VideoImage(image: BufferedImage, centerx: Double, centery: Double)
 
-object ImageProvider {
+trait ImageProvider {
+  
+  def kacheln: List[BufferedImage]
+  def robots: Map[Direction, VideoImage]
+  def can: VideoImage
+
+}
+
+
+object ImageProvider_V02 extends ImageProvider {
 
   private def img(resName: String): BufferedImage = {
     javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(resName))
