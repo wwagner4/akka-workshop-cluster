@@ -8,10 +8,11 @@ import clashcode.robot.Converter
 import clashcode.robot.FieldState
 
 case class FieldStep(from: FieldState, to: FieldState)
+case class Path(path: List[FieldState], fieldSize: Int)
 
 case object SceneCreator {
 
-  def stringCodeToStages(strCode: String, fieldSize: Int, seed: Long): List[Stage] = {
+  def stringCodeToStages(strCode: String, seed: Long): Stages = {
     val ran = new Random(seed)
 
     def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
@@ -24,14 +25,14 @@ case object SceneCreator {
     }
 
     val path = PathUtil.strCodeToPath(strCode, ran)
-    val steps = PathUtil.pathToSteps(path);
-    if (steps.size == 0) Nil
+    val steps = PathUtil.pathToSteps(path.path);
+    val stages = if (steps.size == 0) Nil
     else {
       val startField = steps(0).from
       val startRobot = RobotView(Pos(startField.robot.x * 2 + 1, startField.robot.y * 2 + 1), S)
-      stepsToStages(steps, startRobot, fieldSize)
+      stepsToStages(steps, startRobot, path.fieldSize)
     }
-
+    Stages(stages, path.fieldSize)
   }
 
 }
@@ -92,11 +93,12 @@ case object PathUtil {
     }
   }
 
-  def strCodeToPath(strCode: String, ran: Random): List[FieldState] = {
+  def strCodeToPath(strCode: String, ran: Random): Path = {
     val code: Array[Byte] = strCode.map(c => (c - 48).toByte).toArray
     val decisions = Converter.toDecisions(code)
     val f = FieldFactory.createRandomField(ran, 10)
-    FieldEvaluator.evaluate(decisions, f, ran).path
+    val re = FieldEvaluator.evaluate(decisions, f, ran)
+    Path(re.path, re.fieldWidth)
   }
 
   def mapPos(in: List[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1)).toSet

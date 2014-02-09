@@ -20,6 +20,7 @@ case object NW extends Direction
 case class RobotView(pos: Pos, dir: Direction)
 
 case class Stage(robot: RobotView, cans: Set[Pos])
+case class Stages(stages: List[Stage], fieldSize: Int)
 
 trait Device {
 
@@ -32,19 +33,19 @@ trait Device {
 
   def max: Max
   
-  def playEndless(stages: List[Stage], fieldSize: Int): Unit = {
-    val max = Max(2 * fieldSize, 2 * fieldSize)
+  def playEndless(stages: Stages): Unit = {
+    val max = Max(2 * stages.fieldSize, 2 * stages.fieldSize)
     while (true) {
-      for (s <- stages) {
+      for (s <- stages.stages) {
         paintStage(s)
         postPaintStage
       }
     }
   }
 
-  def playOnes(stages: List[Stage], fieldSize: Int): Unit = {
-    val max = Max(2 * fieldSize, 2 * fieldSize)
-    for (s <- stages) {
+  def playOnes(stages: Stages): Unit = {
+    val max = Max(2 * stages.fieldSize, 2 * stages.fieldSize)
+    for (s <- stages.stages) {
       paintStage(s)
       postPaintStage
     }
