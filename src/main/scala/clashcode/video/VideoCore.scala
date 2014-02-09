@@ -1,7 +1,5 @@
 package clashcode.video
 
-import clashcode.video.swing.SwingDevice
-
 case class Pos(x: Int, y: Int)
 case class Max(x: Int, y: Int)
 case class Rec(w: Int, h: Int)
@@ -24,6 +22,7 @@ case class RobotView(pos: Pos, dir: Direction)
 case class Stage(robot: RobotView, cans: Set[Pos])
 
 trait Device {
+
   type PaintFunc = (Graphics, Stage) => Unit
 
   def paintStage(stage: Stage, f: PaintFunc)
@@ -31,19 +30,27 @@ trait Device {
   def postPaintStage: Unit = {
     // Do nothing by default
   }
-  
-  def play(stages: List[Stage], fieldSize: Int): Unit = {
+
+  def playEndless(stages: List[Stage], fieldSize: Int): Unit = {
     val max = Max(2 * fieldSize, 2 * fieldSize)
     while (true) {
       for (s <- stages) {
-        paintStage(s, paintStage(max)(_, _))
+        paintStage(s, paintStageFunction(max)(_, _))
         postPaintStage
       }
+    }
+  }
+
+  def playOnes(stages: List[Stage], fieldSize: Int): Unit = {
+    val max = Max(2 * fieldSize, 2 * fieldSize)
+    for (s <- stages) {
+      paintStage(s, paintStageFunction(max)(_, _))
+      postPaintStage
     }
     println("finished play")
   }
 
-  def paintStage(max: Max)(g: Graphics, stage: Stage): Unit = {
+  protected def paintStageFunction(max: Max)(g: Graphics, stage: Stage): Unit = {
     g.clear
     val visibleCans = stage.cans - stage.robot.pos
     g.paintField(max)
@@ -52,8 +59,6 @@ trait Device {
     }
     g.paintRobot(stage.robot.pos, stage.robot.dir, max)
   }
-
-  
 
 }
 

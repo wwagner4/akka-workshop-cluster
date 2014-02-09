@@ -14,7 +14,7 @@ object VideoMain extends App {
   //val strCode = "51301351323352311515012111511323201151120550440004411221333414434444304444444444411451544454454344443442040305454535030515343550"
   val stages = SceneCreator.stringCodeToStages(strCode, fieldSize, seed)
   val device = SwingDeviceFactory(20).device
-  device.play(stages, fieldSize)
+  device.playOnes(stages, fieldSize)
 
 }
 
