@@ -106,27 +106,31 @@ abstract class SimpleAwtGraphics(widthHeightRatio: Double, border: Double)
 
 }
 
-abstract class ImageAwtGraphics(imgProvider: ImageProvider, widthHeightRatio: Double, border: Double)
+abstract class ImageAwtGraphics(imgProvider: ImageProvider, useKacheln: Boolean, widthHeightRatio: Double, border: Double)
   extends RectangularAwtGraphics(widthHeightRatio, border) {
 
   override def paintField(max: Max) = {
-    graphics.setColor(Color.BLACK)
-    val field = EffectiveField.calc(_drawArea, widthHeightRatio, border)
-    val fw = field.area.w.toDouble / max.x
-    val fh = field.area.h.toDouble / max.y
-    var k = 0;
-    for (i <- (0 until (max.x / 2))) {
-      for (j <- (0 until (max.y / 2))) {
-        val img = imgProvider.kacheln(k % imgProvider.kacheln.size)
-        val iw = img.getWidth()
-        val ih = img.getHeight()
-        val sx = 2 * fw / iw
-        val sy = 2 * fh / ih
-        val transform = AffineTransform.getTranslateInstance(field.offset.x + 2 * i * fw, field.offset.y + 2 * j * fh)
-        transform.concatenate(AffineTransform.getScaleInstance(sx, sy))
-        graphics.drawImage(img, transform, null)
-        k += 1
+    if (useKacheln) {
+      graphics.setColor(Color.BLACK)
+      val field = EffectiveField.calc(_drawArea, widthHeightRatio, border)
+      val fw = field.area.w.toDouble / max.x
+      val fh = field.area.h.toDouble / max.y
+      var k = 0;
+      for (i <- (0 until (max.x / 2))) {
+        for (j <- (0 until (max.y / 2))) {
+          val img = imgProvider.kacheln(k % imgProvider.kacheln.size)
+          val iw = img.getWidth()
+          val ih = img.getHeight()
+          val sx = 2 * fw / iw
+          val sy = 2 * fh / ih
+          val transform = AffineTransform.getTranslateInstance(field.offset.x + 2 * i * fw, field.offset.y + 2 * j * fh)
+          transform.concatenate(AffineTransform.getScaleInstance(sx, sy))
+          graphics.drawImage(img, transform, null)
+          k += 1
+        }
       }
+    } else {
+      super.paintField(max)
     }
   }
 
@@ -137,7 +141,7 @@ abstract class ImageAwtGraphics(imgProvider: ImageProvider, widthHeightRatio: Do
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
-    val s = fw.toDouble / 2000
+    val s = fw.toDouble / vimg.shrinkFactor
 
     val imgoffx = (img.getWidth.toDouble * s * vimg.centerx).toInt
     val imgoffy = (img.getHeight.toDouble * s * vimg.centery).toInt
@@ -153,7 +157,7 @@ abstract class ImageAwtGraphics(imgProvider: ImageProvider, widthHeightRatio: Do
     val f = EffectiveField.calc(_drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
-    val s = fw.toDouble / 2000
+    val s = fw.toDouble / videoImage.shrinkFactor
 
     val imgoffx = (videoImage.image.getWidth.toDouble * s * videoImage.centerx).toInt
     val imgoffy = (videoImage.image.getHeight.toDouble * s * videoImage.centery).toInt
@@ -165,16 +169,15 @@ abstract class ImageAwtGraphics(imgProvider: ImageProvider, widthHeightRatio: Do
 
 }
 
-case class VideoImage(image: BufferedImage, centerx: Double, centery: Double)
+case class VideoImage(image: BufferedImage, centerx: Double, centery: Double, shrinkFactor: Int)
 
 trait ImageProvider {
-  
+
   def kacheln: List[BufferedImage]
   def robots: Map[Direction, VideoImage]
   def can: VideoImage
 
 }
-
 
 object ImageProvider_V02 extends ImageProvider {
 
@@ -207,9 +210,50 @@ object ImageProvider_V02 extends ImageProvider {
       (NW, "img/robots/r05.png"),
       (W, "img/robots/r06.png"),
       (SW, "img/robots/r07.png"))
-    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.5, 0.6)) }.toMap
+    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.5, 0.6, 2000)) }.toMap
   }
+  
   lazy val can: VideoImage = {
-    VideoImage(img("img/cans/can.png"), 0.5, 0.5)
+    VideoImage(img("img/cans/can.png"), 0.5, 0.5, 2000)
   }
 }
+
+object ImageProvider_V01 extends ImageProvider {
+
+  private def img(resName: String): BufferedImage = {
+    javax.imageio.ImageIO.read(this.getClass().getClassLoader().getResourceAsStream(resName))
+  }
+
+  lazy val kacheln: List[BufferedImage] = {
+    val imgNames = List(
+      "img01/kacheln/k01.png",
+      "img01/kacheln/k02.png",
+      "img01/kacheln/k03.png",
+      "img01/kacheln/k04.png",
+      "img01/kacheln/k05.png",
+      "img01/kacheln/k06.png")
+    val images = imgNames.map(name => img(name))
+    val x = for (i <- 1 to 500) yield {
+      images(Random.nextInt(images.size))
+    }
+    x.toList
+  }
+
+  lazy val robots: Map[Direction, VideoImage] = {
+    val imgNames = List(
+      (S, "img01/robots/r00.png"),
+      (SE, "img01/robots/r01.png"),
+      (E, "img01/robots/r02.png"),
+      (NE, "img01/robots/r03.png"),
+      (N, "img01/robots/r04.png"),
+      (NW, "img01/robots/r05.png"),
+      (W, "img01/robots/r06.png"),
+      (SW, "img01/robots/r07.png"))
+    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.47, 0.7, 2000)) }.toMap
+  }
+
+  lazy val can: VideoImage = {
+    VideoImage(img("img01/cans/can.png"), 0.5, 0.65, 1900)
+  }
+}
+

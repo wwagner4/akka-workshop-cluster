@@ -5,7 +5,7 @@ import clashcode.video.swing._
 
 object VideoMain extends App {
 
-  val framesPerSecond = 50
+  val framesPerSecond = 16
   val seed = 1L
 
   //val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
@@ -25,7 +25,8 @@ case class SwingDeviceFactory(framesPerSecond: Int, fieldSize: Int) {
   private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, fieldSize, createGraphics)
 
   private def createGraphics(g: Graphics2D): AwtGraphics = {
-    new ImageAwtGraphics(ImageProvider_V02, 0.6, 0.05) {
+    val useKacheln = false
+    new ImageAwtGraphics(ImageProvider_V01, useKacheln, 0.6, 0.07) {
       def graphics: Graphics2D = g
       def drawArea: DrawArea = _device.determineCalcArea
     }
