@@ -2,31 +2,6 @@ package clashcode.video
 
 import clashcode.video.swing.SwingDevice
 
-object Video {
-
-  def play(device: Device, stages: List[Stage], fieldSize: Int, framesPerSecond: Int): Unit = {
-    val max = Max(2 * fieldSize, 2 * fieldSize)
-    while (true) {
-      for (s <- stages) {
-        device.paintStage(s, paintStage(max)(_, _))
-        Thread.sleep((1000.0 / framesPerSecond).toInt);
-      }
-    }
-    println("finished play")
-  }
-
-  def paintStage(max: Max)(g: Graphics, stage: Stage): Unit = {
-    g.clear
-    val visibleCans = stage.cans - stage.robot.pos
-    g.paintField(max)
-    for (c <- visibleCans) {
-      g.paintCan(c, max)
-    }
-    g.paintRobot(stage.robot.pos, stage.robot.dir, max)
-  }
-
-}
-
 case class Pos(x: Int, y: Int)
 case class Max(x: Int, y: Int)
 case class Rec(w: Int, h: Int)
@@ -50,7 +25,36 @@ case class Stage(robot: RobotView, cans: Set[Pos])
 
 trait Device {
   type PaintFunc = (Graphics, Stage) => Unit
+
   def paintStage(stage: Stage, f: PaintFunc)
+
+  def postPaintStage: Unit = {
+    // Do nothing by default
+  }
+  
+  def play(stages: List[Stage], fieldSize: Int): Unit = {
+    val max = Max(2 * fieldSize, 2 * fieldSize)
+    while (true) {
+      for (s <- stages) {
+        paintStage(s, paintStage(max)(_, _))
+        postPaintStage
+      }
+    }
+    println("finished play")
+  }
+
+  def paintStage(max: Max)(g: Graphics, stage: Stage): Unit = {
+    g.clear
+    val visibleCans = stage.cans - stage.robot.pos
+    g.paintField(max)
+    for (c <- visibleCans) {
+      g.paintCan(c, max)
+    }
+    g.paintRobot(stage.robot.pos, stage.robot.dir, max)
+  }
+
+  
+
 }
 
 trait Graphics {

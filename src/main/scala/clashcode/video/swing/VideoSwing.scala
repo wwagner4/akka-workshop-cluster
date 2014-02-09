@@ -101,12 +101,12 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
     val fw = f.area.w
     val s = fw.toDouble / 2000
 
-    val imgoffx = (img.getWidth.toDouble * s * vimg.centerx).toInt  
-    val imgoffy = (img.getHeight.toDouble * s * vimg.centery).toInt  
+    val imgoffx = (img.getWidth.toDouble * s * vimg.centerx).toInt
+    val imgoffy = (img.getHeight.toDouble * s * vimg.centery).toInt
     val transform = AffineTransform.getTranslateInstance(o.x - imgoffx, o.y - imgoffy)
-    
+
     transform.concatenate(AffineTransform.getScaleInstance(s, s))
-    
+
     graphics.drawImage(img, transform, null)
   }
 
@@ -117,9 +117,9 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
     val fw = f.area.w
     val s = fw.toDouble / 2000
 
-    val imgoffx = (videoImage.image.getWidth.toDouble * s * videoImage.centerx).toInt  
-    val imgoffy = (videoImage.image.getHeight.toDouble * s * videoImage.centery).toInt  
-    
+    val imgoffx = (videoImage.image.getWidth.toDouble * s * videoImage.centerx).toInt
+    val imgoffy = (videoImage.image.getHeight.toDouble * s * videoImage.centery).toInt
+
     val transform = AffineTransform.getTranslateInstance(o.x - imgoffx, o.y - imgoffy)
     transform.concatenate(AffineTransform.getScaleInstance(s, s))
     graphics.drawImage(videoImage.image, transform, null)
@@ -127,10 +127,14 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
 
 }
 
-case class SwingDevice(g: Graphics2D => AwtGraphics) extends Device {
+case class SwingDevice(framesPerSecond: Int, g: Graphics2D => AwtGraphics) extends Device {
 
   var _stage: Option[Stage] = None
   var _f: Option[PaintFunc] = None
+
+  override def postPaintStage: Unit = {
+    Thread.sleep((1000.0 / framesPerSecond).toInt);
+  }
 
   val panel = new Panel {
 
