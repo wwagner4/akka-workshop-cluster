@@ -249,7 +249,7 @@ object ImageProvider_V01 extends ImageProvider {
       (NW, "img01/robots/r05.png"),
       (W, "img01/robots/r06.png"),
       (SW, "img01/robots/r07.png"))
-    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.47, 0.7, 2000)) }.toMap
+    imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.47, 0.7, 2300)) }.toMap
   }
 
   lazy val can: VideoImage = {
