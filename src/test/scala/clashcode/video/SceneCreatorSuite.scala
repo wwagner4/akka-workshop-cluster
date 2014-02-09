@@ -71,11 +71,24 @@ class SceneCreatorSuite extends FunSuite {
     assert(stages === expectedStages)
   }
 
+  test("step [0 1] [0 0] robot W") {
+    val step = FieldStep(FieldState(FieldPos(0, 1), items), FieldState(FieldPos(0, 0), items))
+    val robot = RobotView(Pos(1, 3), W)
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123))
+    val expectedStages = List(
+      Stage(RobotView(Pos(1, 3), NW), dummyCans),
+      Stage(RobotView(Pos(1, 3), N), dummyCans),
+      Stage(RobotView(Pos(1, 2), N), dummyCans),
+      Stage(RobotView(Pos(1, 1), N), dummyCans))
+    assert(stages === expectedStages)
+  }
+
   {
     case class NextDirResult(fromx: Int, fromy: Int, tox: Int, toy: Int, expectedDir: Direction)
     val validSteps = List(
       NextDirResult(0, 0, 0, 1, S),
       NextDirResult(0, 0, 1, 0, E),
+      NextDirResult(0, 1, 0, 0, N),
       NextDirResult(1, 1, 0, 1, W),
       NextDirResult(1, 1, 1, 0, N),
       NextDirResult(1, 1, 1, 2, S),
@@ -116,9 +129,17 @@ class SceneCreatorSuite extends FunSuite {
       DiffResult(N, S, 4),
       DiffResult(N, SW, -3),
       DiffResult(E, E, 0),
+      DiffResult(N, N, 0),
+      DiffResult(S, S, 0),
+      DiffResult(W, W, 0),
+      DiffResult(W, N, 2),
+      DiffResult(SW, N, 3),
+      DiffResult(S, N, 4),
+      DiffResult(SE, N, -3),
+      DiffResult(NE, N, -1),
       DiffResult(E, W, 4),
       DiffResult(E, S, 2),
-      DiffResult(E, N, 2))
+      DiffResult(E, N, -2))
     for (s <- situations) {
       test(s"Direction diff $s") {
         val d = DirectionUtil.diff(s.from, s.to)
@@ -130,7 +151,9 @@ class SceneCreatorSuite extends FunSuite {
     case class TurnListResult(startDir: Direction, times: Int, expected: List[Direction])
     val situations = List(
       TurnListResult(N, 1, List(NE)),
+      TurnListResult(N, 0, Nil),
       TurnListResult(N, 2, List(NE, E)),
+      TurnListResult(W, 2, List(NW, N)),
       TurnListResult(N, -1, List(NW)))
     for (s <- situations) {
       test(s"Turn list $s") {

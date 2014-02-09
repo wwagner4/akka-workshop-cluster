@@ -13,7 +13,7 @@ case object SceneCreator {
 
   def stringCodeToStages(strCode: String, fieldSize: Int, seed: Long): List[Stage] = {
     val ran = new Random(seed)
-    
+
     def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
       case Nil => Nil
       case s :: r => {
@@ -58,18 +58,16 @@ case object DirectionUtil {
     case NE => N
   }
   def diff(from: Direction, to: Direction): Int = {
-    def toNum(dir: Direction): Int = dir match {
-      case N => 0
-      case NE => 1
-      case E => 2
-      case SE => 3
-      case S => 4
-      case SW => 5
-      case W => 6
-      case NW => 7
-    }
-    val d = math.abs(toNum(from) - toNum(to))
-    if (d > 4) d - 8 else d
+    val nMap: Map[Direction, Int] = List(N -> 0, NE -> 1, E -> 2, SE -> 3, S -> 4, SW -> -3, W -> -2, NW -> -1).toMap
+    val neMap: Map[Direction, Int] = List(N -> -1, NE -> 0, E -> 1, SE -> 2, S -> 3, SW -> 4, W -> -3, NW -> -2).toMap
+    val eMap: Map[Direction, Int] = List(N -> -2, NE -> -1, E -> 0, SE -> 1, S -> 2, SW -> 3, W -> 4, NW -> -3).toMap
+    val seMap: Map[Direction, Int] = List(N -> -3, NE -> -2, E -> -1, SE -> 0, S -> 1, SW -> 2, W -> 3, NW -> 4).toMap
+    val sMap: Map[Direction, Int] = List(N -> 4, NE -> -3, E -> -2, SE -> -1, S -> 0, SW -> 1, W -> 2, NW -> 3).toMap
+    val swMap: Map[Direction, Int] = List(N -> 3, NE -> 4, E -> -3, SE -> -2, S -> -1, SW -> 0, W -> 1, NW -> 2).toMap
+    val wMap: Map[Direction, Int] = List(N -> 2, NE -> 3, E -> 4, SE -> -3, S -> -2, SW -> -1, W -> 0, NW -> 1).toMap
+    val nwMap: Map[Direction, Int] = List(N -> 1, NE -> 2, E -> 3, SE -> 4, S -> -3, SW -> -2, W -> -1, NW -> 0).toMap
+    val map: Map[Direction, Map[Direction, Int]] = List(N -> nMap, NE -> neMap, E -> eMap, SE -> seMap, S -> sMap, SW -> swMap, W -> wMap, NW -> nwMap).toMap
+    map(from)(to)
   }
 
   def turnList(startDirection: Direction, times: Int): List[Direction] = {
@@ -102,7 +100,7 @@ case object PathUtil {
   }
 
   def mapPos(in: List[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1)).toSet
-  
+
   def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int, ran: Random): List[Stage] = {
     def turn(nextDir: Direction): List[Stage] = {
       val prevDir = robot.dir
