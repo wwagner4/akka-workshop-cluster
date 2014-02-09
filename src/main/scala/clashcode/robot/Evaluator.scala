@@ -2,7 +2,7 @@ package clashcode.robot
 
 import scala.util.Random
 
-case class EvalResult(points: Int, path: List[FieldState])
+case class EvalResult(points: Int, path: List[FieldState], fieldWidth: Integer)
 
 /**
  * The evaluator checks how well a robot performs and calculates its points (=fitness).
@@ -33,7 +33,7 @@ object Evaluator {
       points += re.points
       path = re.path ::: path
     })
-    EvalResult(points, path.reverse)
+    EvalResult(points, path.reverse, fieldSize)
   }
 
 }
@@ -54,7 +54,7 @@ object FieldEvaluator {
       points += gs.points
       path = gs.state :: path
     }
-    EvalResult(points, path.reverse)
+    EvalResult(points, path.reverse, testField.fieldSize)
   }
 
 }
