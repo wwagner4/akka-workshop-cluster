@@ -31,14 +31,16 @@ class SampleActor(broadcast: ActorRef, strat: Strategy) extends Actor {
   def receive = {
 
     case Every10Seconds =>
+      println("Every10Seconds")
       broadcast ! Random.shuffle(robots).head // broadcast random robot of mine (every 10 seconds)
 
     case Evolve =>
+      println("Evolve")
       evolve()
       self ! Evolve // constantly evolve
 
     case robot: Robot =>
-      println("I received a robot from someone! what should I do?")
+      println("Robot")
       robots = strat.receivedRobot(robot, robots)
   }
 
