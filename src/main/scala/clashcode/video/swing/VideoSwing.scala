@@ -13,13 +13,51 @@ import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
 import scala.util.Random
 
+case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createAwtGraphics: Graphics2D => AwtGraphics) extends Device {
+
+  def max = Max(fieldSize * 2, fieldSize * 2)
+
+  var _stage: Option[Stage] = None
+
+  override def postPaintStage: Unit = {
+    Thread.sleep((1000.0 / framesPerSecond).toInt);
+  }
+
+  val panel = new Panel {
+
+    override def paint(awtg: Graphics2D): Unit = {
+      _stage match {
+        case Some(s) => paintStageToGraphics(createAwtGraphics(awtg), s)
+        case None => // Nothing to be done
+      }
+    }
+
+  }
+
+  val mf = new MainFrame()
+  mf.contents = panel
+  mf.size = new Dimension(500, 500)
+  mf.centerOnScreen
+  mf.visible = true;
+
+  def paintStage(stage: Stage) = {
+    _stage = Some(stage)
+    panel.repaint
+  }
+
+  def determineCalcArea: DrawArea = {
+    DrawArea(Pos(0, 0), Rec(panel.size.width, panel.size.height))
+  }
+
+}
+
 trait AwtGraphics extends Graphics {
 
   def graphics: Graphics2D
 
 }
 
-abstract class AwtRectGraphics(widthHeightRatio: Double, border: Double) extends AwtGraphics {
+abstract class RectangularAwtGraphics(widthHeightRatio: Double, border: Double) extends AwtGraphics {
 
   val _drawArea = drawArea
 
@@ -48,8 +86,8 @@ abstract class AwtRectGraphics(widthHeightRatio: Double, border: Double) extends
   }
 }
 
-abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Double)
-  extends AwtRectGraphics(widthHeightRatio, border) {
+abstract class SimpleAwtGraphics(widthHeightRatio: Double, border: Double)
+  extends RectangularAwtGraphics(widthHeightRatio, border) {
 
   def paintCan(pos: Pos, max: Max) = {
     graphics.setColor(Color.RED)
@@ -68,8 +106,8 @@ abstract class AwtRectGraphicsSimple(widthHeightRatio: Double, border: Double)
 
 }
 
-abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
-  extends AwtRectGraphics(widthHeightRatio, border) {
+abstract class ImageAwtGraphics(widthHeightRatio: Double, border: Double)
+  extends RectangularAwtGraphics(widthHeightRatio, border) {
 
   override def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
@@ -123,49 +161,6 @@ abstract class AwtRectGraphicsImages(widthHeightRatio: Double, border: Double)
     val transform = AffineTransform.getTranslateInstance(o.x - imgoffx, o.y - imgoffy)
     transform.concatenate(AffineTransform.getScaleInstance(s, s))
     graphics.drawImage(videoImage.image, transform, null)
-  }
-
-}
-
-case class SwingDevice(framesPerSecond: Int, g: Graphics2D => AwtGraphics) extends Device {
-
-  var _stage: Option[Stage] = None
-  var _f: Option[PaintFunc] = None
-
-  override def postPaintStage: Unit = {
-    Thread.sleep((1000.0 / framesPerSecond).toInt);
-  }
-
-  val panel = new Panel {
-
-    override def paint(awtg: Graphics2D): Unit = {
-      _stage match {
-        case Some(s) => _f match {
-          case Some(f) => {
-            f(g(awtg), s)
-          }
-          case None => // Nothing to be done
-        }
-        case None => // Nothing to be done
-      }
-    }
-
-  }
-
-  val mf = new MainFrame()
-  mf.contents = panel
-  mf.size = new Dimension(500, 500)
-  mf.centerOnScreen
-  mf.visible = true;
-
-  def paintStage(stage: Stage, f: PaintFunc) = {
-    _stage = Some(stage)
-    _f = Some(f)
-    panel.repaint
-  }
-
-  def drawArea: DrawArea = {
-    DrawArea(Pos(0, 0), Rec(panel.size.width, panel.size.height))
   }
 
 }

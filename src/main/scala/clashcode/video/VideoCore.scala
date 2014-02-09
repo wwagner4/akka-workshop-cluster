@@ -25,17 +25,19 @@ trait Device {
 
   type PaintFunc = (Graphics, Stage) => Unit
 
-  def paintStage(stage: Stage, f: PaintFunc)
+  def paintStage(stage: Stage)
 
   def postPaintStage: Unit = {
     // Do nothing by default
   }
 
+  def max: Max
+  
   def playEndless(stages: List[Stage], fieldSize: Int): Unit = {
     val max = Max(2 * fieldSize, 2 * fieldSize)
     while (true) {
       for (s <- stages) {
-        paintStage(s, paintStageFunction(max)(_, _))
+        paintStage(s)
         postPaintStage
       }
     }
@@ -44,13 +46,13 @@ trait Device {
   def playOnes(stages: List[Stage], fieldSize: Int): Unit = {
     val max = Max(2 * fieldSize, 2 * fieldSize)
     for (s <- stages) {
-      paintStage(s, paintStageFunction(max)(_, _))
+      paintStage(s)
       postPaintStage
     }
     println("finished play")
   }
 
-  protected def paintStageFunction(max: Max)(g: Graphics, stage: Stage): Unit = {
+  protected def paintStageToGraphics(g: Graphics, stage: Stage): Unit = {
     g.clear
     val visibleCans = stage.cans - stage.robot.pos
     g.paintField(max)
