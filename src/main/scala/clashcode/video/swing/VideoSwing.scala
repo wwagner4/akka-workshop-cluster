@@ -12,6 +12,7 @@ import java.awt.geom.AffineTransform
 import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
 import scala.util.Random
+import javax.swing.ImageIcon
 
 case class SwingDevice(framesPerSecond: Int, createCommonGraphics: Graphics2D => CommonGraphics)
   extends Device {
@@ -40,6 +41,8 @@ case class SwingDevice(framesPerSecond: Int, createCommonGraphics: Graphics2D =>
 
   val mf = new MainFrame()
   mf.contents = panel
+  mf.title = "Akka Workshop Reloaded"
+  mf.iconImage = new ImageIcon(getClass.getClassLoader().getResource("icon.png")).getImage
   mf.size = mf.toolkit.getScreenSize()
   mf.visible = true;
 
