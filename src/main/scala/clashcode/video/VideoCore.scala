@@ -20,11 +20,14 @@ case object NW extends Direction
 case class RobotView(pos: Pos, dir: Direction)
 
 sealed trait Stage {
-  def paint(g: CommonGraphics, max: Max): Unit
+  def paint(g: CommonGraphics): Unit
 }
 
 case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int) extends Stage {
-  def paint(g: CommonGraphics, max: Max): Unit = {
+
+  val max = Max(fieldSize * 2, fieldSize * 2)
+
+  def paint(g: CommonGraphics): Unit = {
     g.clear
     val visibleCans = cans - robot.pos
     g.paintField(max)
@@ -33,18 +36,16 @@ case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int) extends S
     }
     g.paintRobot(robot.pos, robot.dir, max)
   }
-  
+
 }
 
 case class TextStage(text: Text) extends Stage {
-  def paint(g: CommonGraphics, max: Max): Unit = {
+  def paint(g: CommonGraphics): Unit = {
     g.clear
-  	g.paintText(text)
+    g.paintText(text)
   }
-  
-}
 
-case class Stages(stages: List[Stage], fieldSize: Int)
+}
 
 trait Device {
 
@@ -55,29 +56,24 @@ trait Device {
     // Do nothing by default
   }
 
-  def max: Max
-  
-  def playEndless(stages: Stages): Unit = {
-    val max = Max(2 * stages.fieldSize, 2 * stages.fieldSize)
+  def playEndless(stages: List[Stage]): Unit = {
+    assert(stages.nonEmpty, "Stages must not be empty")
     while (true) {
-      for (s <- stages.stages) {
+      stages.foreach(s => {
         paintStage(s)
         postPaintStage
-      }
+      })
     }
   }
 
-  def playOnes(stages: Stages): Unit = {
-    val max = Max(2 * stages.fieldSize, 2 * stages.fieldSize)
-    for (s <- stages.stages) {
+  def playOnes(stages: List[Stage]): Unit = {
+    stages.foreach(s => {
       paintStage(s)
       postPaintStage
-    }
-    println("finished play")
+    })
   }
 
 }
-
 
 /**
  * Abstraction level for Graphics

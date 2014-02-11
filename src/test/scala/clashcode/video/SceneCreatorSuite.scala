@@ -30,7 +30,7 @@ class SceneCreatorSuite extends FunSuite {
   test("String code to scenes") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
     val stages = SceneCreator.stringCodeToStages(strCode, None, 24234L)
-    assert(stages.stages.size > 100)
+    assert(stages.size > 100)
   }
 
   val items = List.empty[FieldPos]

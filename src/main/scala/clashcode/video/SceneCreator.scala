@@ -12,7 +12,7 @@ case class Path(path: List[FieldState], fieldSize: Int)
 
 case object SceneCreator {
 
-  def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long): Stages = {
+  def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long): List[Stage] = {
     val ran = new Random(seed)
 
     def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
@@ -26,13 +26,10 @@ case object SceneCreator {
 
     val path = PathUtil.strCodeToPath(strCode, gameSteps, ran)
     val steps = PathUtil.pathToSteps(path.path);
-    val stages = if (steps.size == 0) Nil
-    else {
-      val startField = steps(0).from
-      val startRobot = RobotView(Pos(startField.robot.x * 2 + 1, startField.robot.y * 2 + 1), S)
-      stepsToStages(steps, startRobot, path.fieldSize)
-    }
-    Stages(stages, path.fieldSize)
+    assert(steps.nonEmpty, "There should be at least one step")
+    val startField = steps(0).from
+    val startRobot = RobotView(Pos(startField.robot.x * 2 + 1, startField.robot.y * 2 + 1), S)
+    stepsToStages(steps, startRobot, path.fieldSize)
   }
 
 }

@@ -14,7 +14,7 @@ object TextWithGameTryout extends App {
   val framesPerSecond = 15
 
   val stages = VideoCreator.create(video: Video, framesPerSecond)
-  val device: Device = SwingDeviceFactory(framesPerSecond, stages.fieldSize).device
+  val device: Device = SwingDeviceFactory(framesPerSecond).device
   device.playOnes(stages)
 
 }

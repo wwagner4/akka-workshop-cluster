@@ -13,9 +13,8 @@ import java.awt.image.AffineTransformOp
 import java.awt.image.BufferedImage
 import scala.util.Random
 
-case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createCommonGraphics: Graphics2D => CommonGraphics) extends Device {
-
-  def max = Max(fieldSize * 2, fieldSize * 2)
+case class SwingDevice(framesPerSecond: Int, createCommonGraphics: Graphics2D => CommonGraphics)
+  extends Device {
 
   var _stage: Option[Stage] = None
 
@@ -32,7 +31,7 @@ case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createCommonGraphic
 
     override def paint(awtg: Graphics2D): Unit = {
       _stage match {
-        case Some(s) => s.paint(createCommonGraphics(awtg), max)
+        case Some(s) => s.paint(createCommonGraphics(awtg))
         case None => // Nothing to be done
       }
     }

@@ -15,16 +15,16 @@ object VideoMain extends App {
   val framesPerSecond = 15
 
   val stages = VideoCreator.create(video: Video, framesPerSecond)
-  val device: Device = SwingDeviceFactory(framesPerSecond, stages.fieldSize).device
+  val device: Device = SwingDeviceFactory(framesPerSecond).device
   device.playOnes(stages)
 
 }
 
-case class SwingDeviceFactory(framesPerSecond: Int, fieldSize: Int) {
+case class SwingDeviceFactory(framesPerSecond: Int) {
   
   def device: Device = _device
   
-  private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, fieldSize, createGraphics)
+  private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, createGraphics)
 
   private def createGraphics(g: Graphics2D): AwtGraphics = {
     val useKacheln = false

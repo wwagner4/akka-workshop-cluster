@@ -15,9 +15,8 @@ you need to assign a shortcut to the
   
   val stageList: List[Stage] = List(
       TextStage(Text(longText)))
-  val stages = Stages(stageList, 10)
-    val device: Device = SwingDeviceFactory(framesPerSecond, stages.fieldSize).device
-  device.playEndless(stages)
+    val device: Device = SwingDeviceFactory(framesPerSecond).device
+  device.playEndless(stageList)
 
 
 }
