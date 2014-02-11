@@ -74,6 +74,10 @@ abstract class RectangularAwtGraphics(widthHeightRatio: Double, border: Double) 
     graphics.setFont(font.deriveFont(fontSize))
     val lines = text.lines
     for (i <- 0 until lines.size) {
+      if (i == 1) {
+	    val fontSize = _drawArea.area.h.toFloat / 30
+	    graphics.setFont(font.deriveFont(fontSize))
+      }
       graphics.drawString(lines(i), 30, 10 + fontSize * (i + 1))
     }
   }
