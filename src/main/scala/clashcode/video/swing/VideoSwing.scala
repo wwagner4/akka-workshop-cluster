@@ -68,9 +68,15 @@ abstract class RectangularAwtGraphics(widthHeightRatio: Double, border: Double) 
     val h = _drawArea.area.h
     graphics.fillRect(x, y, w, h)
   }
-  def paintText(text: String) = {
+  def paintText(text: Text) = {
     graphics.setColor(Color.BLACK)
-    graphics.drawString(text, 100, 100)
+    val font = graphics.getFont()
+    val fontSize = _drawArea.area.h.toFloat / 15
+    graphics.setFont(font.deriveFont(fontSize))
+    val lines = text.lines
+    for (i <- 0 until lines.size) {
+      graphics.drawString(lines(i), 30, 10 + fontSize * i)
+    }
   }
   def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
@@ -215,7 +221,7 @@ object ImageProvider_V02 extends ImageProvider {
       (SW, "img/robots/r07.png"))
     imgNames.map { case (key, name) => (key, VideoImage(img(name), 0.5, 0.6, 2000)) }.toMap
   }
-  
+
   lazy val can: VideoImage = {
     VideoImage(img("img/cans/can.png"), 0.5, 0.5, 2000)
   }

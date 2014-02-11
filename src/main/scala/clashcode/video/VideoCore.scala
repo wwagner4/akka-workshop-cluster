@@ -36,10 +36,10 @@ case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
   
 }
 
-case class TextStage(text: String) extends Stage {
+case class TextStage(text: Text) extends Stage {
   def paint(g: CommonGraphics, max: Max): Unit = {
     g.clear
-    g.paintText(text)
+  	g.paintText(text)
   }
   
 }
@@ -83,12 +83,15 @@ trait Device {
  * Abstraction level for Graphics
  * Can, but must not be used from Device implementations
  */
+
+case class Text(lines: List[String])
+
 trait CommonGraphics {
   def drawArea: DrawArea
   def clear: Unit
   def paintField(max: Max)
   def paintCan(pos: Pos, max: Max)
   def paintRobot(pos: Pos, dir: Direction, max: Max)
-  def paintText(text: String)
+  def paintText(text: Text)
 }
 

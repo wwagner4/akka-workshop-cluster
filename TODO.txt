@@ -1,4 +1,3 @@
-- Show a text
 - Run a code with a text before
 - Stay still at the beginning and the end
 - Run only a part of the simulation (for the bad ones)
@@ -6,3 +5,4 @@
 
 DONE
 - Fullstcreen on startup
+- Show a text
