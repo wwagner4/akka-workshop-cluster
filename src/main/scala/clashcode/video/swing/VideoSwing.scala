@@ -68,6 +68,10 @@ abstract class RectangularAwtGraphics(widthHeightRatio: Double, border: Double) 
     val h = _drawArea.area.h
     graphics.fillRect(x, y, w, h)
   }
+  def paintText(text: String) = {
+    graphics.setColor(Color.BLACK)
+    graphics.drawString(text, 100, 100)
+  }
   def paintField(max: Max) = {
     graphics.setColor(Color.BLACK)
     val field = EffectiveField.calc(_drawArea, widthHeightRatio, border)
