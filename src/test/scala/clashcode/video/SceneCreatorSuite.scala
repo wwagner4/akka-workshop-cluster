@@ -23,13 +23,13 @@ class SceneCreatorSuite extends FunSuite {
 
   test("Create path from result with PathUtil") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
-    val path = PathUtil.strCodeToPath(strCode, new Random(200))
+    val path = PathUtil.strCodeToPath(strCode, None, new Random(200))
     assert(path.path.length === 200)
   }
 
   test("String code to scenes") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
-    val stages = SceneCreator.stringCodeToStages(strCode, 24234L)
+    val stages = SceneCreator.stringCodeToStages(strCode, None, 24234L)
     assert(stages.stages.size > 100)
   }
 
@@ -37,7 +37,7 @@ class SceneCreatorSuite extends FunSuite {
 
   test("Split path to steps") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
-    val path = PathUtil.strCodeToPath(strCode, new Random(200)).path.take(4)
+    val path = PathUtil.strCodeToPath(strCode, None, new Random(200)).path.take(4)
     val steps: List[FieldStep] = PathUtil.pathToSteps(path)
     assert(steps.size === 3)
   }

@@ -71,11 +71,11 @@ abstract class RectangularAwtGraphics(widthHeightRatio: Double, border: Double) 
   def paintText(text: Text) = {
     graphics.setColor(Color.BLACK)
     val font = graphics.getFont()
-    val fontSize = _drawArea.area.h.toFloat / 15
+    val fontSize = _drawArea.area.h.toFloat / 25
     graphics.setFont(font.deriveFont(fontSize))
     val lines = text.lines
     for (i <- 0 until lines.size) {
-      graphics.drawString(lines(i), 30, 10 + fontSize * i)
+      graphics.drawString(lines(i), 30, 10 + fontSize * (i + 1))
     }
   }
   def paintField(max: Max) = {

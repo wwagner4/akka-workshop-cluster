@@ -12,7 +12,7 @@ case class Path(path: List[FieldState], fieldSize: Int)
 
 case object SceneCreator {
 
-  def stringCodeToStages(strCode: String, seed: Long): Stages = {
+  def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long): Stages = {
     val ran = new Random(seed)
 
     def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
@@ -24,7 +24,7 @@ case object SceneCreator {
       }
     }
 
-    val path = PathUtil.strCodeToPath(strCode, ran)
+    val path = PathUtil.strCodeToPath(strCode, gameSteps, ran)
     val steps = PathUtil.pathToSteps(path.path);
     val stages = if (steps.size == 0) Nil
     else {
@@ -93,12 +93,16 @@ case object PathUtil {
     }
   }
 
-  def strCodeToPath(strCode: String, ran: Random): Path = {
+  def strCodeToPath(strCode: String, gameSteps: Option[Int], ran: Random): Path = {
     val code: Array[Byte] = strCode.map(c => (c - 48).toByte).toArray
     val decisions = Converter.toDecisions(code)
     val f = FieldFactory.createRandomField(ran, 10)
     val re = FieldEvaluator.evaluate(decisions, f, ran)
-    Path(re.path, re.fieldWidth)
+    val stateList = gameSteps match {
+      case None => re.path
+      case Some(len) => re.path.take(len)
+    }
+    Path(stateList, re.fieldWidth)
   }
 
   def mapPos(in: List[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1)).toSet
