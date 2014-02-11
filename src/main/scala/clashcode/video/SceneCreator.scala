@@ -19,6 +19,7 @@ case object SceneCreator {
       case Nil => Nil
       case s :: r => {
         val stages = PathUtil.stepToStages(s, robot, fieldSize, ran)
+        // TODO See how to remove that asInstanceOf
         val lastRobot = stages.last.asInstanceOf[GameStage].robot
         stages ::: stepsToStages(r, lastRobot, fieldSize)
       }
@@ -29,7 +30,19 @@ case object SceneCreator {
     assert(steps.nonEmpty, "There should be at least one step")
     val startField = steps(0).from
     val startRobot = RobotView(Pos(startField.robot.x * 2 + 1, startField.robot.y * 2 + 1), S)
-    stepsToStages(steps, startRobot, path.fieldSize)
+    delayBeforeAfter(stepsToStages(steps, startRobot, path.fieldSize))
+  }
+
+  private def delayBeforeAfter(stages: List[Stage]): List[Stage] = {
+    val beforeAfterDelayFrames: Int = 30
+    if (stages.isEmpty) Nil
+    else {
+      val first = stages(0)
+      val last = stages.last
+      val head = List.fill(beforeAfterDelayFrames)(first)
+      val tail = List.fill(beforeAfterDelayFrames)(last)
+      head ::: stages ::: tail
+    }
   }
 
 }
