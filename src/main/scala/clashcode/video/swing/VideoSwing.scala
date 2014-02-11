@@ -36,8 +36,7 @@ case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createCommonGraphic
 
   val mf = new MainFrame()
   mf.contents = panel
-  mf.size = new Dimension(500, 500)
-  mf.centerOnScreen
+  mf.size = mf.toolkit.getScreenSize()
   mf.visible = true;
 
   def paintStage(stage: Stage) = {
