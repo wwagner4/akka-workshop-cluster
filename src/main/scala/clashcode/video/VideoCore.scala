@@ -23,7 +23,7 @@ sealed trait Stage {
   def paint(g: CommonGraphics, max: Max): Unit
 }
 
-case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
+case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int) extends Stage {
   def paint(g: CommonGraphics, max: Max): Unit = {
     g.clear
     val visibleCans = cans - robot.pos
