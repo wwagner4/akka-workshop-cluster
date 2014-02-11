@@ -50,12 +50,12 @@ class SceneCreatorSuite extends FunSuite {
     val robot = RobotView(Pos(1, 1), N)
     val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(2))
     val expectedStages = List(
-      Stage(RobotView(Pos(1, 1), NE), dummyCans),
-      Stage(RobotView(Pos(1, 1), E), dummyCans),
-      Stage(RobotView(Pos(1, 1), SE), dummyCans),
-      Stage(RobotView(Pos(1, 1), S), dummyCans),
-      Stage(RobotView(Pos(1, 2), S), dummyCans),
-      Stage(RobotView(Pos(1, 3), S), dummyCans))
+      GameStage(RobotView(Pos(1, 1), NE), dummyCans),
+      GameStage(RobotView(Pos(1, 1), E), dummyCans),
+      GameStage(RobotView(Pos(1, 1), SE), dummyCans),
+      GameStage(RobotView(Pos(1, 1), S), dummyCans),
+      GameStage(RobotView(Pos(1, 2), S), dummyCans),
+      GameStage(RobotView(Pos(1, 3), S), dummyCans))
     assert(stages === expectedStages)
   }
 
@@ -64,10 +64,10 @@ class SceneCreatorSuite extends FunSuite {
     val robot = RobotView(Pos(1, 1), N)
     val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123))
     val expectedStages = List(
-      Stage(RobotView(Pos(1, 1), NE), dummyCans),
-      Stage(RobotView(Pos(1, 1), E), dummyCans),
-      Stage(RobotView(Pos(2, 1), E), dummyCans),
-      Stage(RobotView(Pos(3, 1), E), dummyCans))
+      GameStage(RobotView(Pos(1, 1), NE), dummyCans),
+      GameStage(RobotView(Pos(1, 1), E), dummyCans),
+      GameStage(RobotView(Pos(2, 1), E), dummyCans),
+      GameStage(RobotView(Pos(3, 1), E), dummyCans))
     assert(stages === expectedStages)
   }
 
@@ -76,10 +76,10 @@ class SceneCreatorSuite extends FunSuite {
     val robot = RobotView(Pos(1, 3), W)
     val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123))
     val expectedStages = List(
-      Stage(RobotView(Pos(1, 3), NW), dummyCans),
-      Stage(RobotView(Pos(1, 3), N), dummyCans),
-      Stage(RobotView(Pos(1, 2), N), dummyCans),
-      Stage(RobotView(Pos(1, 1), N), dummyCans))
+      GameStage(RobotView(Pos(1, 3), NW), dummyCans),
+      GameStage(RobotView(Pos(1, 3), N), dummyCans),
+      GameStage(RobotView(Pos(1, 2), N), dummyCans),
+      GameStage(RobotView(Pos(1, 1), N), dummyCans))
     assert(stages === expectedStages)
   }
 

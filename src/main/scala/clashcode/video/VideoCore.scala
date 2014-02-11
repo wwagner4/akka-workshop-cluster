@@ -19,7 +19,23 @@ case object NW extends Direction
 
 case class RobotView(pos: Pos, dir: Direction)
 
-case class Stage(robot: RobotView, cans: Set[Pos])
+sealed trait Stage {
+  def paint(g: CommonGraphics, max: Max): Unit
+}
+
+case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
+  def paint(g: CommonGraphics, max: Max): Unit = {
+    g.clear
+    val visibleCans = cans - robot.pos
+    g.paintField(max)
+    for (c <- visibleCans) {
+      g.paintCan(c, max)
+    }
+    g.paintRobot(robot.pos, robot.dir, max)
+  }
+  
+}
+
 case class Stages(stages: List[Stage], fieldSize: Int)
 
 trait Device {
@@ -67,16 +83,3 @@ trait CommonGraphics {
   def paintRobot(pos: Pos, dir: Direction, max: Max)
 }
 
-object CommonGraphicsUtil {
-  def paintStage(g: CommonGraphics, stage: Stage, max: Max): Unit = {
-    g.clear
-    val visibleCans = stage.cans - stage.robot.pos
-    g.paintField(max)
-    for (c <- visibleCans) {
-      g.paintCan(c, max)
-    }
-    g.paintRobot(stage.robot.pos, stage.robot.dir, max)
-  }
-
-  
-}  

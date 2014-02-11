@@ -19,7 +19,7 @@ case object SceneCreator {
       case Nil => Nil
       case s :: r => {
         val stages = PathUtil.stepToStages(s, robot, fieldSize, ran)
-        val lastRobot = stages.last.robot
+        val lastRobot = stages.last.asInstanceOf[GameStage].robot
         stages ::: stepsToStages(r, lastRobot, fieldSize)
       }
     }
@@ -107,28 +107,28 @@ case object PathUtil {
     def turn(nextDir: Direction): List[Stage] = {
       val prevDir = robot.dir
       val diff = DirectionUtil.diff(prevDir, nextDir)
-      DirectionUtil.turnList(robot.dir, diff).map(d => Stage(RobotView(robot.pos, d), mapPos(step.from.items)))
+      DirectionUtil.turnList(robot.dir, diff).map(d => GameStage(RobotView(robot.pos, d), mapPos(step.from.items)))
     }
     def move(nextDir: Direction): List[Stage] = nextDir match {
       case N => List(
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), mapPos(step.from.items)),
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), mapPos(step.to.items)))
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), mapPos(step.to.items)))
       case E => List(
-        Stage(RobotView(Pos(robot.pos.x + 1, robot.pos.y), nextDir), mapPos(step.from.items)),
-        Stage(RobotView(Pos(robot.pos.x + 2, robot.pos.y), nextDir), mapPos(step.to.items)))
+        GameStage(RobotView(Pos(robot.pos.x + 1, robot.pos.y), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x + 2, robot.pos.y), nextDir), mapPos(step.to.items)))
       case S => List(
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 1), nextDir), mapPos(step.from.items)),
-        Stage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), mapPos(step.to.items)))
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y + 1), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), mapPos(step.to.items)))
       case W => List(
-        Stage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), mapPos(step.from.items)),
-        Stage(RobotView(Pos(robot.pos.x - 2, robot.pos.y), nextDir), mapPos(step.to.items)))
+        GameStage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x - 2, robot.pos.y), nextDir), mapPos(step.to.items)))
       case _ => throw new IllegalArgumentException(s"Robot can only move N, E, S or W. Not $nextDir")
     }
     if (step.from.robot.x == step.to.robot.x && step.from.robot.y == step.to.robot.y) {
       val nextDir = if (ran.nextBoolean) DirectionUtil.turnRight(robot.dir)
       else DirectionUtil.turnLeft(robot.dir)
       val nextRobot = RobotView(robot.pos, nextDir)
-      List(Stage(robot, mapPos(step.to.items)))
+      List(GameStage(robot, mapPos(step.to.items)))
     } else {
       val ndir: Direction = nextDirection(step, fieldSize)
       turn(ndir) ::: move(ndir)

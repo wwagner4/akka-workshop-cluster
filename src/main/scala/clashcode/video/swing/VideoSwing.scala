@@ -19,6 +19,11 @@ case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createCommonGraphic
 
   var _stage: Option[Stage] = None
 
+  def paintStage(stage: Stage) = {
+    _stage = Some(stage)
+    panel.repaint
+  }
+
   override def postPaintStage: Unit = {
     Thread.sleep((1000.0 / framesPerSecond).toInt);
   }
@@ -27,7 +32,7 @@ case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createCommonGraphic
 
     override def paint(awtg: Graphics2D): Unit = {
       _stage match {
-        case Some(s) => CommonGraphicsUtil.paintStage(createCommonGraphics(awtg), s, max)
+        case Some(s) => s.paint(createCommonGraphics(awtg), max)
         case None => // Nothing to be done
       }
     }
@@ -38,11 +43,6 @@ case class SwingDevice(framesPerSecond: Int, fieldSize: Int, createCommonGraphic
   mf.contents = panel
   mf.size = mf.toolkit.getScreenSize()
   mf.visible = true;
-
-  def paintStage(stage: Stage) = {
-    _stage = Some(stage)
-    panel.repaint
-  }
 
   def determineCalcArea: DrawArea = {
     DrawArea(Pos(0, 0), Rec(panel.size.width, panel.size.height))
