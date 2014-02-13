@@ -8,7 +8,18 @@ object VideoEngine extends App {
 
   println("Reading File")
   val results: List[ResultEntry] = readFile("workshop-erge.txt").sortBy(_.fitness).reverse
-  println(results.mkString("\n"))
+  for (i <- 0 until results.size) printVideo(i, results(i))
+
+  private def printVideo(index: Int, result: ResultEntry): Unit = {
+     val id = "%03d" format index
+	 val s = s"""  val v${id} = Video("${result.fitness}\\n\\n${result.name}",
+    5.second,
+    "${result.code}",
+    None,
+    1L)
+"""
+	 println(s)
+  }
 
   private def readFile(filename: String): List[ResultEntry] = {
     import scala.io.Source
