@@ -1,5 +1,7 @@
 package clashcode.video
 
+import scala.io.Codec
+
 case class ResultEntry(fitness: Int, name: String, code: String)
 
 object VideoEngine extends App {
@@ -11,7 +13,7 @@ object VideoEngine extends App {
   private def readFile(filename: String): List[ResultEntry] = {
     import scala.io.Source
     import java.io.File
-    val linesList = Source.fromFile(new File(filename)).getLines().toSet
+    val linesList = Source.fromFile(new File(filename))(Codec.UTF8).getLines().toSet
     val set = linesList.map(parseLine(_))
     set.toList
   }
