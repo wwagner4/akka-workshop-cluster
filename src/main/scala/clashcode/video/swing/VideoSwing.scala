@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage
 import scala.util.Random
 import javax.swing.ImageIcon
 
-case class SwingDevice(framesPerSecond: Int, createCommonGraphics: Graphics2D => CommonGraphics)
+case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
   extends Device {
 
   var _stage: Option[Stage] = None
@@ -32,7 +32,7 @@ case class SwingDevice(framesPerSecond: Int, createCommonGraphics: Graphics2D =>
 
     override def paint(awtg: Graphics2D): Unit = {
       _stage match {
-        case Some(s) => s.paint(createCommonGraphics(awtg))
+        case Some(s) => s.paint(f(awtg))
         case None => // Nothing to be done
       }
     }
