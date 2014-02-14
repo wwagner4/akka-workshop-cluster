@@ -78,7 +78,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v010 = Video("97935\n\n[Philip(743),@lachdrache(192),Sebastian(118),Dražen(102),petra(55)]",
+  val v010 = Video("97935\n\n[Philip(743),@lachdrache(192),Sebastian(118),Drazen(102),petra(55)]",
     5.second,
     "32311022203003511011112022352233511234230050212250002231331104524444444424442444434142434442444452141214453414245444341453451225",
     None,
@@ -90,7 +90,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v012 = Video("97935\n\n[Philip(744),@lachdrache(192),Dražen(127),Sebastian(118),petra(55)]",
+  val v012 = Video("97935\n\n[Philip(744),@lachdrache(192),Drazen(127),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011122022352233524214230050012250005221031023514444444424440444434142434442444442141314453414245444141453451225",
     None,
@@ -102,7 +102,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v014 = Video("97935\n\n[Philip(743),@lachdrache(192),Dražen(122),Sebastian(118),petra(55)]",
+  val v014 = Video("97935\n\n[Philip(743),@lachdrache(192),Drazen(122),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011122022352233524234230050512250003211231415314444444424442424434142434442444402141214453434245444043453411225",
     None,
@@ -132,19 +132,19 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v019 = Video("97935\n\n[Philip(1702),Dražen(236),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v019 = Video("97935\n\n[Philip(1702),Drazen(236),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011122022352233524234230050512250002231231000314444444424445434434142434442444402141214453434245444044453411225",
     None,
     ran.nextLong)
 
-  val v020 = Video("97935\n\n[Philip(1702),Dražen(233),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v020 = Video("97935\n\n[Philip(1702),Drazen(233),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203053511011112322352233545234230050512250002231331115414444444424445434434142434442444402141214453434245444043453411225",
     None,
     ran.nextLong)
 
-  val v021 = Video("97935\n\n[Philip(1143),@lachdrache(192),Dražen(142),Sebastian(118),petra(55)]",
+  val v021 = Video("97935\n\n[Philip(1143),@lachdrache(192),Drazen(142),Sebastian(118),petra(55)]",
     5.second,
     "32311022203003311011132122352233052244230050312250005211031421544444444424445414434142434442444432141114453434245444441453401225",
     None,
@@ -162,7 +162,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v024 = Video("97935\n\n[Philip(1702),Dražen(214),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v024 = Video("97935\n\n[Philip(1702),Drazen(214),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203003511011112322352233541234230050212250002231231200314444444424444434434142434442444402141414453434245444043453411225",
     None,
@@ -192,7 +192,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v029 = Video("97935\n\n[Philip(1702),Dražen(220),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v029 = Video("97935\n\n[Philip(1702),Drazen(220),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203053511011112322352233224234230050212250003221331104524444444424445434434142434442444402141214453434245444044453411225",
     None,
@@ -222,13 +222,13 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v034 = Video("97935\n\n[Philip(1702),Dražen(242),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v034 = Video("97935\n\n[Philip(1702),Drazen(242),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011122022352233524234230050512250003211231200314444444424445434434142434442444402141214453434245444043453411225",
     None,
     ran.nextLong)
 
-  val v035 = Video("97935\n\n[Philip(743),@lachdrache(192),Dražen(126),Sebastian(118),petra(55)]",
+  val v035 = Video("97935\n\n[Philip(743),@lachdrache(192),Drazen(126),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011112022352233511234230050212250002231331104524444444424442444434142434442444452141214453434245444043453411225",
     None,
@@ -240,7 +240,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v037 = Video("97935\n\n[Philip(1702),Dražen(237),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v037 = Video("97935\n\n[Philip(1702),Drazen(237),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011122022352233524234230050512250003211231200314444444424445434434142434442444402141214453434245444044453411225",
     None,
@@ -258,13 +258,13 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v040 = Video("97935\n\n[Philip(1702),Dražen(237),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v040 = Video("97935\n\n[Philip(1702),Drazen(237),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203003511011112322352233541234230050212250002231231200314444444424444434434142434442444402141214453434245444044453411225",
     None,
     ran.nextLong)
 
-  val v041 = Video("97935\n\n[Philip(1702),Dražen(224),@lachdrache(192),Sebastian(118),petra(55)]",
+  val v041 = Video("97935\n\n[Philip(1702),Drazen(224),@lachdrache(192),Sebastian(118),petra(55)]",
     5.second,
     "32311022203043511011122022352233224234230050212250003221231243414444444424445424434142434442444402141214453434245444043453411225",
     None,
@@ -282,7 +282,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v044 = Video("97935\n\n[Philip(743),@lachdrache(192),Dražen(123),Sebastian(118),petra(55)]",
+  val v044 = Video("97935\n\n[Philip(743),@lachdrache(192),Drazen(123),Sebastian(118),petra(55)]",
     5.second,
     "32311022203003511011112022352233511234230050212250002231331104524444444424442444434142434442444452141214453434245444043453411225",
     None,
@@ -348,13 +348,13 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v055 = Video("97575\n\n[Philip(532),@lachdrache(192),Sebastian(95),Dražen(82),petra(55)]",
+  val v055 = Video("97575\n\n[Philip(532),@lachdrache(192),Sebastian(95),Drazen(82),petra(55)]",
     5.second,
     "32311022203043511111352222352233223224250230212200005231331410334444444424442424434142434442444400144144443444255444540403404205",
     None,
     ran.nextLong)
 
-  val v056 = Video("97530\n\n[Philip(1099),@lachdrache(192),Dražen(142),Sebastian(118),petra(55)]",
+  val v056 = Video("97530\n\n[Philip(1099),@lachdrache(192),Drazen(142),Sebastian(118),petra(55)]",
     5.second,
     "32311022203003211011132022322233141234210000212200002231331132314444444424443434434142434442444423144244443404222444441403401203",
     None,
@@ -372,7 +372,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v059 = Video("94880\n\n[Philip(743),@lachdrache(192),Dražen(123),Sebastian(118),petra(55)]",
+  val v059 = Video("94880\n\n[Philip(743),@lachdrache(192),Drazen(123),Sebastian(118),petra(55)]",
     5.second,
     "32311022203003511011152022352233145234250050212250002231331135314444444424443444434152434443444452141314453404245444340453414225",
     None,
@@ -402,13 +402,13 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v064 = Video("93530\n\n[Philip(392),@lachdrache(192),petra(55),Dražen(55),Sanjin(30)]",
+  val v064 = Video("93530\n\n[Philip(392),@lachdrache(192),petra(55),Drazen(55),Sanjin(30)]",
     5.second,
     "52311322335043311215322032322221212210230530105330005020130400224444444454440424434142434442424540444541423404232434322443454242",
     None,
     ran.nextLong)
 
-  val v065 = Video("93510\n\n[Philip(380),@lachdrache(192),petra(55),Dražen(50),Sanjin(30)]",
+  val v065 = Video("93510\n\n[Philip(380),@lachdrache(192),petra(55),Drazen(50),Sanjin(30)]",
     5.second,
     "52311322335003311215322032322223202215230530105230001040130200244444444454442434434142434442424543444545443444242434322443454202",
     None,
@@ -444,19 +444,19 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v071 = Video("90900\n\n[@lachdrache(3637),Jürgen(3247),petra(515),Sanjin(51),Sigi(1)]",
+  val v071 = Video("90900\n\n[@lachdrache(3637),Jï¿½rgen(3247),petra(515),Sanjin(51),Sigi(1)]",
     5.second,
     "51312121303013523311124321321033231121110000242100302521100532134444244444444214144544044434424422443423444433442444422444011441",
     None,
     ran.nextLong)
 
-  val v072 = Video("90900\n\n[@lachdrache(3663),Jürgen(3247),petra(487),Sanjin(51),Sigi(1)]",
+  val v072 = Video("90900\n\n[@lachdrache(3663),Jï¿½rgen(3247),petra(487),Sanjin(51),Sigi(1)]",
     5.second,
     "51311121303043320313122321321033501121140000332100300511100332144444544444442224144044244434424421443423444423442444022444051441",
     None,
     ran.nextLong)
 
-  val v073 = Video("90900\n\n[@lachdrache(3685),Jürgen(3368),petra(515),Sanjin(51),Sigi(1)]",
+  val v073 = Video("90900\n\n[@lachdrache(3685),Jï¿½rgen(3368),petra(515),Sanjin(51),Sigi(1)]",
     5.second,
     "51310121303003321311125321321533501121110000252100300521100332154444544444444204144244044434424422443423444413442444322444051441",
     None,
@@ -474,37 +474,37 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v076 = Video("90785\n\n[Philip(228),@lachdrache(192),petra(55),Sanjin(29),Dražen(27)]",
+  val v076 = Video("90785\n\n[Philip(228),@lachdrache(192),petra(55),Sanjin(29),Drazen(27)]",
     5.second,
     "52311322335003311215322222322432312214210230505020001000430200134444444454445414434144434442424303445240443404252434345403434202",
     None,
     ran.nextLong)
 
-  val v077 = Video("90490\n\n[@lachdrache(3637),Jürgen(3247),petra(487),Sanjin(51),Sigi(1)]",
+  val v077 = Video("90490\n\n[@lachdrache(3637),Jï¿½rgen(3247),petra(487),Sanjin(51),Sigi(1)]",
     5.second,
     "51314121303013321311122321321033211131110000122100304341100332534444544444443244144144244434424421443423444423442444022444011441",
     None,
     ran.nextLong)
 
-  val v078 = Video("90350\n\n[@lachdrache(3615),Jürgen(3247),petra(487),Sanjin(51),Sigi(1)]",
+  val v078 = Video("90350\n\n[@lachdrache(3615),Jï¿½rgen(3247),petra(487),Sanjin(51),Sigi(1)]",
     5.second,
     "51311121303013520311122321321033101131150000242100305521300522534444544444445214144144544434424422443443444424442444022454021441",
     None,
     ran.nextLong)
 
-  val v079 = Video("90350\n\n[@lachdrache(3581),Jürgen(3247),petra(366),Sanjin(51),Sigi(1)]",
+  val v079 = Video("90350\n\n[@lachdrache(3581),Jï¿½rgen(3247),petra(366),Sanjin(51),Sigi(1)]",
     5.second,
     "51311121303013523311122321321033221131110000242100301521300542534444544444444244144544044434424422443443444450442444024454011411",
     None,
     ran.nextLong)
 
-  val v080 = Video("90250\n\n[@lachdrache(3550),Jürgen(3247),petra(487),Sanjin(51),Sigi(1)]",
+  val v080 = Video("90250\n\n[@lachdrache(3550),Jï¿½rgen(3247),petra(487),Sanjin(51),Sigi(1)]",
     5.second,
     "51313121303003122311121321321033111121130000212100302521100532534444244444444244144544044434424422443443444400442444022414041412",
     None,
     ran.nextLong)
 
-  val v081 = Video("90220\n\n[@lachdrache(3550),Jürgen(3247),petra(366),Sanjin(51),Sigi(1)]",
+  val v081 = Video("90220\n\n[@lachdrache(3550),Jï¿½rgen(3247),petra(366),Sanjin(51),Sigi(1)]",
     5.second,
     "51312121303022022311122321321433201131130000202100301521100532534444544444444214144544044434424422443443444405442444022414011412",
     None,
@@ -516,13 +516,13 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v083 = Video("89840\n\n[@lachdrache(3532),Jürgen(3247),petra(468),Sanjin(51),Sigi(1)]",
+  val v083 = Video("89840\n\n[@lachdrache(3532),Jï¿½rgen(3247),petra(468),Sanjin(51),Sigi(1)]",
     5.second,
     "51313121303042122311120321321433101121130000212100303551450522534444244444444214144544444434424320443443444404444444223444043430",
     None,
     ran.nextLong)
 
-  val v084 = Video("89840\n\n[@lachdrache(3532),Jürgen(3247),petra(366),Sanjin(51),Sigi(1)]",
+  val v084 = Video("89840\n\n[@lachdrache(3532),Jï¿½rgen(3247),petra(366),Sanjin(51),Sigi(1)]",
     5.second,
     "51312121303012022311120321321433101121130000212100303551150512534444244444445214144544444434424320443443444404444444423444045400",
     None,
@@ -540,7 +540,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v087 = Video("89500\n\n[@lachdrache(3504),Jürgen(3247),petra(443),Sanjin(51),Sigi(1)]",
+  val v087 = Video("89500\n\n[@lachdrache(3504),Jï¿½rgen(3247),petra(443),Sanjin(51),Sigi(1)]",
     5.second,
     "51310121303054521311121321321435501121240100232100303551100512114444244444440214144344444444424321444443444052444444223444043430",
     None,
@@ -570,25 +570,25 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v092 = Video("85880\n\n[Philip(743),@lachdrache(192),Dražen(123),Sebastian(118),petra(55)]",
+  val v092 = Video("85880\n\n[Philip(743),@lachdrache(192),Drazen(123),Sebastian(118),petra(55)]",
     5.second,
     "32511022203013512011142522352233511234230450212050002231331104524444444424442444434142434442444452141113453434245454443453454232",
     None,
     ran.nextLong)
 
-  val v093 = Video("85810\n\n[Philip(208),@lachdrache(187),petra(55),Sanjin(29),Dražen(28)]",
+  val v093 = Video("85810\n\n[Philip(208),@lachdrache(187),petra(55),Sanjin(29),Drazen(28)]",
     5.second,
     "52311352335002311215322222321432412215210530503225302050430000134444444454445424434142434442424303445241444404252454345403444204",
     None,
     ran.nextLong)
 
-  val v094 = Video("85800\n\n[Philip(193),@lachdrache(182),petra(55),Sanjin(24),Dražen(5)]",
+  val v094 = Video("85800\n\n[Philip(193),@lachdrache(182),petra(55),Sanjin(24),Drazen(5)]",
     5.second,
     "52311352335003311215322222321432412215210530503225302050430000134444444454445424434142434442424303445241444404252454345403444204",
     None,
     ran.nextLong)
 
-  val v095 = Video("84355\n\n[@lachdrache(3464),Jürgen(3247),petra(307),Sanjin(51),Sigi(2)]",
+  val v095 = Video("84355\n\n[@lachdrache(3464),Jï¿½rgen(3247),petra(307),Sanjin(51),Sigi(2)]",
     5.second,
     "51312021203000151311020321321135201121240001202100303550130402004444044444403214144344444434454324444442444052444444324444031454",
     None,
@@ -600,7 +600,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v097 = Video("82570\n\n[Philip(194),@lachdrache(192),petra(55),Sanjin(29),Dražen(22)]",
+  val v097 = Video("82570\n\n[Philip(194),@lachdrache(192),petra(55),Sanjin(29),Drazen(22)]",
     5.second,
     "52311352335002311215352322321430432225110530205125503000430000134444444444444424434144434442424303445241444404252434342443404234",
     None,
@@ -618,7 +618,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v100 = Video("74840\n\n[@lachdrache(3431),Jürgen(3247),petra(307),Sanjin(51),Sigi(1)]",
+  val v100 = Video("74840\n\n[@lachdrache(3431),Jï¿½rgen(3247),petra(307),Sanjin(51),Sigi(1)]",
     5.second,
     "51312020203023255515020521121335201131220000210000350500430202004444244443403504144344444434424320444443444023444444324424025454",
     None,
@@ -678,7 +678,7 @@ object AkkaWorkshopResultsVideos {
     None,
     ran.nextLong)
 
-  val v110 = Video("43038\n\n[@lachdrache(163),petra(55),Philip(32),Sanjin(22),Dražen(1)]",
+  val v110 = Video("43038\n\n[@lachdrache(163),petra(55),Philip(32),Sanjin(22),Drazen(1)]",
     5.second,
     "51111052325043211001121032355221303251120430301435014025155410134441054434301334450402444445423534444241404404204542042444443214",
     None,
