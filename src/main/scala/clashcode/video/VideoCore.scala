@@ -19,6 +19,8 @@ case object NW extends Direction
 
 case class RobotView(pos: Pos, dir: Direction)
 
+case class NumberedStage(nr: Int, stage: Stage)
+
 sealed trait Stage {
   def paint(g: CommonGraphics): Unit
 }
@@ -50,13 +52,13 @@ case class TextStage(text: Text) extends Stage {
 trait Device {
 
   // Define how to paint a stage on that device
-  def paintStage(stage: Stage)
+  def paintStage(stage: NumberedStage)
 
   def postPaintStage: Unit = {
     // Do nothing by default
   }
 
-  def playEndless(stages: List[Stage]): Unit = {
+  def playEndless(stages: List[NumberedStage]): Unit = {
     assert(stages.nonEmpty, "Stages must not be empty")
     while (true) {
       stages.foreach(s => {
@@ -66,7 +68,7 @@ trait Device {
     }
   }
 
-  def playOnes(stages: List[Stage]): Unit = {
+  def playOnes(stages: List[NumberedStage]): Unit = {
     stages.foreach(s => {
       paintStage(s)
       postPaintStage

@@ -3,9 +3,8 @@ package clashcode.video.lists
 import scala.concurrent.duration.DurationInt
 
 import clashcode.video.Video
-import clashcode.video.VideoList
 
-object AkkaWorkshopPresentationVideos extends VideoList{
+object AkkaWorkshopPresentationVideos {
   
   def videos = List(v02_01, v02_07, v02_09, v02_10)
 

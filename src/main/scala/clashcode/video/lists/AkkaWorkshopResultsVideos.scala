@@ -2,14 +2,21 @@ package clashcode.video.lists
 
 import scala.concurrent.duration.DurationInt
 import clashcode.video.Video
-import clashcode.video.VideoList
 import scala.util.Random
 
-object AkkaWorkshopResultsVideos extends VideoList {
+object AkkaWorkshopResultsVideos {
 
   def videos = List(v000, v001, v002, v003, v004)
   
+  def test = List(vt000)
+
   val ran = new Random
+
+  val vt000 = Video("TEST ",
+    500.milli,
+    "32311022203043011011122022352233524234230050512250003011231200224444444424443404434142434442444402141214453434245440443403411255",
+    Some(10),
+    ran.nextLong)
 
   val v000 = Video("97980\n\n[Philip(623),Sebastian(187),@lachdrache(182),petra(55),Sanjin(24)]",
     5.second,

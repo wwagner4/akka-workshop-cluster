@@ -15,13 +15,13 @@ case object SceneCreator {
   def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long): List[Stage] = {
     val ran = new Random(seed)
 
-    def stepsToStages(steps: List[FieldStep], robot: RobotView, fieldSize: Int): List[Stage] = steps match {
+    def stepsToStages(steps: List[FieldStep], preRobot: RobotView, fieldSize: Int): List[Stage] = steps match {
       case Nil => Nil
-      case s :: r => {
-        val stages = PathUtil.stepToStages(s, robot, fieldSize, ran)
+      case head :: tail => {
+        val stages = PathUtil.stepToStages(head, preRobot, fieldSize, ran)
         // TODO See how to remove that asInstanceOf
         val lastRobot = stages.last.asInstanceOf[GameStage].robot
-        stages ::: stepsToStages(r, lastRobot, fieldSize)
+        stages ::: stepsToStages(tail, lastRobot, fieldSize)
       }
     }
 
@@ -121,7 +121,8 @@ case object PathUtil {
     def turn(nextDir: Direction): List[Stage] = {
       val prevDir = robot.dir
       val diff = DirectionUtil.diff(prevDir, nextDir)
-      DirectionUtil.turnList(robot.dir, diff).map(d => GameStage(RobotView(robot.pos, d), mapPos(step.from.items), fieldSize))
+      val tl = DirectionUtil.turnList(robot.dir, diff)
+      tl.map( d => GameStage(RobotView(robot.pos, d), mapPos(step.from.items), fieldSize) )
     }
     def move(nextDir: Direction): List[Stage] = nextDir match {
       case N => List(
@@ -139,13 +140,17 @@ case object PathUtil {
       case _ => throw new IllegalArgumentException(s"Robot can only move N, E, S or W. Not $nextDir")
     }
     if (step.from.robot.x == step.to.robot.x && step.from.robot.y == step.to.robot.y) {
+      // Robot did not move
       val nextDir = if (ran.nextBoolean) DirectionUtil.turnRight(robot.dir)
       else DirectionUtil.turnLeft(robot.dir)
       val nextRobot = RobotView(robot.pos, nextDir)
       List(GameStage(robot, mapPos(step.to.items), fieldSize))
     } else {
+      // Robot moved
       val ndir: Direction = nextDirection(step, fieldSize)
-      turn(ndir) ::: move(ndir)
+      val turns = turn(ndir)
+      val moves = move(ndir)
+      turns ::: moves
     }
   }
 

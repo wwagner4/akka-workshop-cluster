@@ -17,9 +17,9 @@ import javax.swing.ImageIcon
 case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
   extends Device {
 
-  var _stage: Option[Stage] = None
+  var _stage: Option[NumberedStage] = None
 
-  def paintStage(stage: Stage) = {
+  def paintStage(stage: NumberedStage) = {
     _stage = Some(stage)
     panel.repaint
   }
@@ -32,7 +32,7 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
 
     override def paint(awtg: Graphics2D): Unit = {
       _stage match {
-        case Some(s) => s.paint(f(awtg))
+        case Some(s) => s.stage.paint(f(awtg))
         case None => // Nothing to be done
       }
     }
