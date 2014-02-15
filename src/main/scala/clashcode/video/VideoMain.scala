@@ -10,11 +10,13 @@ object VideoMain extends App {
   val framesPerSecond = 14
 
   //val vl: VideoList = AkkaWorkshopPresentationVideos.videos
-  val vl = AkkaWorkshopResultsVideos.test
+  val vl = List(AkkaWorkshopResultsVideos.v001)
+  
   val stages = VideoCreator.create(vl, framesPerSecond)
   
-  // val device: Device = SwingDeviceFactory(framesPerSecond).device
-  val device: Device = new ImagesDevice
+  val device: Device = SwingDeviceFactory(framesPerSecond).device
+  //val device: Device = new ImagesDevice
+  
   device.playOnes(stages)
 
 }
