@@ -2,15 +2,15 @@ package clashcode.video
 
 import scala.io.Codec
 
-case class ResultEntry(fitness: Int, name: String, code: String)
+case class ResultEntry(fitness: Int, name: String, code: String) 
 
 object VideoEngine extends App {
 
   val fileName = "workshop-erge.txt"
   println(s"Reading File '$fileName'")
   val results: List[ResultEntry] = readFile(fileName).sortBy(_.fitness).reverse.take(100)
-  for (i <- 0 until results.size) printVideo(i + 1, results(i))
-  //for (i <- 0 until results.size) printResultList(i + 1, results(i))
+  //for (i <- 0 until results.size) printVideo(i + 1, results(i))
+  for (i <- 0 until results.size) printResultList(i + 1, results(i))
 
   private def printVideo(index: Int, result: ResultEntry): Unit = {
     val id = "%03d" format index
