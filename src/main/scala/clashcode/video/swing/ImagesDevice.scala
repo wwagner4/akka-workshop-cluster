@@ -23,7 +23,6 @@ class ImagesDevice extends Device {
   val imgFormat = "png" // jpg, png
 
   def paintStage(stage: NumberedStage): Unit = {
-    println("paint stage")
     val bi = new BufferedImage(res.w, res.h, BufferedImage.TYPE_INT_RGB)
     val g2 = bi.createGraphics();
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

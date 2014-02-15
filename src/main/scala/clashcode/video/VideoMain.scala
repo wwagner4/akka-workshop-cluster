@@ -12,9 +12,10 @@ object VideoMain extends App {
   //val vl: VideoList = AkkaWorkshopPresentationVideos.videos
   //val vl = List(AkkaWorkshopResultsVideos.v001)
   
-  val vl = AkkaWorkshopWinnerVideos.winner
-  //val vl = AkkaWorkshopWinnerVideos.stuck
+  //val vl = AkkaWorkshopWinnerVideos.winner
   //val vl = AkkaWorkshopWinnerVideos.next
+  //val vl = AkkaWorkshopWinnerVideos.noPhilip
+  val vl = AkkaWorkshopWinnerVideos.stuck
  
   val stages = VideoCreator.create(vl, framesPerSecond)
   
