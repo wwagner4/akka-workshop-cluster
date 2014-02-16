@@ -17,14 +17,12 @@ class ImagesDevice extends Device {
 
   //val res = Rec(3840, 2160) // 2160p
   //val res = Rec(2560, 1440)
-  //val res = Rec(1920, 1080)
-  val res = Rec(1920, 1090)
+  val res = Rec(1920, 1080)
   //val res = Rec(1600, 900)
   //val res = Rec(640, 360)
-  val imgFormat = "jpg" // jpg, png
+  val imgFormat = "png" // jpg, png
 
   def paintStage(stage: NumberedStage): Unit = {
-    println("paint stage")
     val bi = new BufferedImage(res.w, res.h, BufferedImage.TYPE_INT_RGB)
     val g2 = bi.createGraphics();
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -37,7 +35,7 @@ class ImagesDevice extends Device {
     if (mkdirsOK) {
 
       val nr: String = "%05d" format stage.nr
-      val fileName = s"img$nr.jpg"
+      val fileName = s"img$nr.$imgFormat"
       val file = new File(outDir, fileName)
       val writeOK = ImageIO.write(bi, imgFormat, file)
       if (!writeOK) throw new IllegalStateException(s"Error writing image $fileName")

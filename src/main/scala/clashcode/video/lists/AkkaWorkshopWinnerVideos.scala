@@ -47,7 +47,7 @@ object AkkaWorkshopWinnerVideos {
 
   def noPhilip = List(v078a, v078b, v078c)
 
-  val v078a = Video("The best robot not influenced by Philip. Nr: 78\n[@lachdrache(3637),Jürgen(3247),petra(487),Sanjin(51),Sigi(1)]\nFitness: 90490\n\nProud to show its behaviour on three fields\n\nField I",
+  val v078a = Video("The best robot not influenced by Philip. Nr: 78\n[@lachdrache(3637),JÃ¼rgen(3247),petra(487),Sanjin(51),Sigi(1)]\nFitness: 90490\n\nProud to show its behaviour on three fields\n\nField I",
     7.second,
     "51314121303013321311122321321033211131110000122100304341100332534444544444443244144144244434424421443423444423442444022444011441",
     None,
@@ -67,7 +67,7 @@ object AkkaWorkshopWinnerVideos {
 
   def stuck = List(v082a, v082b, v082c)
 
-  val v082a = Video("Where we got stuck in the first session. Nr: 82\n[@lachdrache(3550),Jürgen(3247),petra(366),Sanjin(51),Sigi(1)]\nFitness: 90220\n\nProud to show its behaviour on three fields\n\nField I",
+  val v082a = Video("Where we got stuck in the first session. Nr: 82\n[@lachdrache(3550),JÃ¼rgen(3247),petra(366),Sanjin(51),Sigi(1)]\nFitness: 90220\n\nProud to show its behaviour on three fields\n\nField I",
     7.second,
     "51312121303022022311122321321433201131130000202100301521100532534444544444444214144544044434424422443443444405442444022414011412",
     None,
