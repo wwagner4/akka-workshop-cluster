@@ -11,17 +11,19 @@ object VideoMain extends App {
 
   //val vl = AkkaWorkshopPresentationVideos.videos
   //val vl = AkkaWorkshopWinnerVideos.winner
-
   //val vl = AkkaWorkshopWinnerVideos.next
   //val vl = AkkaWorkshopWinnerVideos.noPhilip
-  val vl = AkkaWorkshopWinnerVideos.stuck
+  //val vl = AkkaWorkshopWinnerVideos.stuck
+
+  val vl = List(AkkaWorkshopResultsVideos.v001)
  
   val stages = VideoCreator.create(vl, framesPerSecond)
   
-  //val device: Device = SwingDeviceFactory(framesPerSecond).device
-  val device: Device = new ImagesDevice
+  val device: Device = SwingDeviceFactory(framesPerSecond).device
+  //val device: Device = new ImagesDevice
   
   device.playOnes(stages)
+  //device.playEndless(stages)
 
 }
 
