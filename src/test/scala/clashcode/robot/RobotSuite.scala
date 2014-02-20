@@ -54,7 +54,7 @@ class RobotSuite extends FeatureSpec with Matchers {
       val items = List(false, false, false, false, false, true, false, false, false)
       val citems = ItemConverter.convertItems(items, 3)
       items.size should be (9)
-      citems should be (Set(FieldPos(2, 1))) 
+      citems should be (List(FieldPos(2, 1))) 
     }
   }
 
