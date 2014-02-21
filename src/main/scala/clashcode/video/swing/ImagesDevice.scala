@@ -12,8 +12,9 @@ import clashcode.video.Rec
 import javax.imageio.ImageIO
 import java.io.File
 import clashcode.video.NumberedStage
+import clashcode.video.ImageProvider
 
-class ImagesDevice extends Device {
+class ImagesDevice(imageProvider: ImageProvider) extends Device {
 
   //val res = Rec(3840, 2160) // 2160p
   //val res = Rec(2560, 1440)
@@ -26,7 +27,7 @@ class ImagesDevice extends Device {
     val bi = new BufferedImage(res.w, res.h, BufferedImage.TYPE_INT_RGB)
     val g2 = bi.createGraphics();
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    val cg = toCommonGraphics(g2)
+    val cg = toCommonGraphics(g2, imageProvider)
     stage.stage.paint(cg)
 
     val home = new File(System.getProperty("user.home"))
@@ -44,9 +45,9 @@ class ImagesDevice extends Device {
       throw new IllegalStateException(s"Error creating directory '$outDir'")
     }
   }
-  private def toCommonGraphics(g: Graphics2D): CommonGraphics = {
+  private def toCommonGraphics(g: Graphics2D, imageProvider: ImageProvider): CommonGraphics = {
     val useKacheln = false
-    new ImageAwtGraphics(ImageProvider_V01, useKacheln, 0.6, 0.07) {
+    new ImageAwtGraphics(imageProvider, useKacheln, 0.6, 0.07) {
       def graphics: Graphics2D = g
       def drawArea: DrawArea = DrawArea(Pos(0, 0), res)
     }
