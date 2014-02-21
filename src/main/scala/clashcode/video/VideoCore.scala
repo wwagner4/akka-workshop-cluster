@@ -30,7 +30,7 @@ case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int, imgProvid
   val max = Max(fieldSize * 2, fieldSize * 2)
 
   def paint(g: CommonGraphics): Unit = {
-    val p = GamePainter(g, imgProvider, 0.5, 0.05)
+    val p = StagesPainter(g, imgProvider, widthHeightRatio, border)
     p.clear
     val visibleCans = cans - robot.pos
     p.paintField(max)
@@ -43,14 +43,15 @@ case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int, imgProvid
 
 case class TextStage(text: Text, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) extends Stage {
   def paint(g: CommonGraphics): Unit = {
-    val p = GamePainter(g, imgProvider, widthHeightRatio, border)
+    val p = StagesPainter(g, imgProvider, widthHeightRatio, border)
     p.clear
     p.paintText(text)
   }
 }
   
 
-case class GamePainter(g: CommonGraphics, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) {
+case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) {
+  
 
   def clear: Unit = {
     g.setColor(White)
