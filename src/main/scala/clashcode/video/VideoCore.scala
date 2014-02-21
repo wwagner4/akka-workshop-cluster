@@ -30,22 +30,84 @@ case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int) extends S
   val max = Max(fieldSize * 2, fieldSize * 2)
 
   def paint(g: CommonGraphics): Unit = {
-    g.clear
+    val p = GamePainter(g)
+    p.clear
     val visibleCans = cans - robot.pos
-    g.paintField(max)
+    p.paintField(max)
     for (c <- visibleCans) {
-      g.paintCan(c, max)
+      p.paintCan(c, max)
     }
-    g.paintRobot(robot.pos, robot.dir, max)
+    p.paintRobot(robot.pos, robot.dir, max)
   }
-
 }
 
 case class TextStage(text: Text) extends Stage {
   def paint(g: CommonGraphics): Unit = {
-    g.clear
-    g.paintText(text)
+    val p = GamePainter(g)
+    p.clear
+    p.paintText(text)
   }
+}
+
+case class GamePainter(g: CommonGraphics) {
+
+  def clear: Unit = {
+    g.setColor(White)
+    val x = g.drawArea.offset.x
+    val y = g.drawArea.offset.y
+    val w = g.drawArea.area.w
+    val h = g.drawArea.area.h
+    g.fillRect(x, y, w, h)
+  }
+
+  def paintField(max: Max): Unit = {
+    g.setColor(Black)
+    val field = EffectiveField.calc(g.drawArea, g.widthHeightRatio, g.border)
+    (0 to (max.x / 2) - 1).foreach(i => {
+      val fw = field.area.w / (max.x / 2)
+      val d = i * fw
+      g.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h)
+    })
+    (0 to (max.y / 2) - 1).foreach(i => {
+      val fh = field.area.h / (max.y / 2)
+      val d = i * fh
+      g.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d)
+    })
+    g.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
+  }
+  def paintCan(pos: Pos, max: Max) = {
+    val vimg = g.imgProvider.can
+    val img = vimg.image
+    val f = EffectiveField.calc(g.drawArea, g.widthHeightRatio, g.border)
+    val epos: Pos = EffectiveOffset.calc(pos, max, f)
+    val fw = f.area.w
+    val s = fw.toDouble / vimg.shrinkFactor
+    g.drawImage(vimg, epos, s)
+  }
+
+  def paintRobot(pos: Pos, dir: Direction, max: Max) = {
+    val videoImage = g.imgProvider.robots(dir)
+    val f = EffectiveField.calc(g.drawArea, g.widthHeightRatio, g.border)
+    val o: Pos = EffectiveOffset.calc(pos, max, f)
+    val fw = f.area.w
+    val s = fw.toDouble / videoImage.shrinkFactor
+    g.drawImage(videoImage, o, s)
+  }
+  def paintText(text: Text) = {
+    g.setColor(Black)
+    val fontSize = g.drawArea.area.h.toFloat / 25
+    g.setFontSize(fontSize)
+    val lines = text.lines
+    for (i <- 0 until lines.size) {
+      if (i == 1) {
+	    val fontSize = g.drawArea.area.h.toFloat / 30
+	    g.setFontSize(fontSize)
+      }
+      val y = (10 + fontSize * (i + 1)).toInt
+      g.drawString(lines(i), 30, y)
+    }
+  }
+
 
 }
 
@@ -88,85 +150,6 @@ sealed trait CommonColor
 case object Black extends CommonColor
 case object White extends CommonColor
 
-trait CommonGraphics {
-  
-  def imgProvider: ImageProvider
-  
-  def widthHeightRatio: Double = 0.8
-  def border: Double = 0.05
-
-  def drawImage(vimg: VideoImage, pos: Pos, scale: Double)
-
-  def clear: Unit = {
-    setColor(White)
-    val x = drawArea.offset.x
-    val y = drawArea.offset.y
-    val w = drawArea.area.w
-    val h = drawArea.area.h
-    fillRect(x, y, w, h)
-  }
-
-  def setColor(c: CommonColor)
-  def drawArea: DrawArea
-  
-  def drawLine(fromx: Int, fromy: Int, tox: Int, toy: Int)
-  def drawRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
-  def fillRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
-  def paintField(max: Max): Unit = {
-    setColor(Black)
-    val field = EffectiveField.calc(drawArea, widthHeightRatio, border)
-    (0 to (max.x / 2) - 1).foreach(i => {
-      val fw = field.area.w / (max.x / 2)
-      val d = i * fw;
-      drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h)
-    })
-    (0 to (max.y / 2) - 1).foreach(i => {
-      val fh = field.area.h / (max.y / 2)
-      val d = i * fh;
-      drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d)
-    })
-    drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
-  }
-  def paintCan(pos: Pos, max: Max) = {
-    val vimg = imgProvider.can
-    val img = vimg.image
-    val f = EffectiveField.calc(drawArea, widthHeightRatio, border)
-    val o: Pos = EffectiveOffset.calc(pos, max, f)
-    val fw = f.area.w
-    val s = fw.toDouble / vimg.shrinkFactor
-
-    drawImage(vimg, o, s)
-  }
-
-  def paintRobot(pos: Pos, dir: Direction, max: Max) = {
-    val videoImage = imgProvider.robots(dir)
-    val f = EffectiveField.calc(drawArea, widthHeightRatio, border)
-    val o: Pos = EffectiveOffset.calc(pos, max, f)
-    val fw = f.area.w
-    val s = fw.toDouble / videoImage.shrinkFactor
-    drawImage(videoImage, o, s)
-  }
-
-  def setFontSize(size: Double)
-  
-  def drawString(str: String, x: Int, y: Int)
-  
-  def paintText(text: Text) = {
-    setColor(Black)
-    val fontSize = drawArea.area.h.toFloat / 25
-    setFontSize(fontSize)
-    val lines = text.lines
-    for (i <- 0 until lines.size) {
-      if (i == 1) {
-	    val fontSize = drawArea.area.h.toFloat / 30
-	    setFontSize(fontSize)
-      }
-      val y = (10 + fontSize * (i + 1)).toInt
-      drawString(lines(i), 30, y)
-    }
-  }
-}
-
 case class VideoImage(image: java.net.URL, centerx: Double, centery: Double, shrinkFactor: Int)
 
 trait ImageProvider {
@@ -177,6 +160,24 @@ trait ImageProvider {
   def img(resName: String): java.net.URL = {
     this.getClass().getClassLoader().getResource(resName)
   }
+
+}
+
+trait CommonGraphics {
+
+  def imgProvider: ImageProvider
+
+  def widthHeightRatio: Double
+  def border: Double
+  def drawArea: DrawArea
+
+  def drawImage(vimg: VideoImage, pos: Pos, scale: Double)
+  def setColor(c: CommonColor)
+  def drawLine(fromx: Int, fromy: Int, tox: Int, toy: Int)
+  def drawRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
+  def fillRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
+  def setFontSize(size: Double)
+  def drawString(str: String, x: Int, y: Int)
 
 }
 
@@ -201,7 +202,6 @@ object ImageProvider_V02 extends ImageProvider {
 }
 
 object ImageProvider_V01 extends ImageProvider {
-
 
   lazy val robots: Map[Direction, VideoImage] = {
     val imgNames = List(

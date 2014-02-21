@@ -36,7 +36,6 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
         case None => // Nothing to be done
       }
     }
-
   }
 
   val mf = new MainFrame()
@@ -52,18 +51,10 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
 
 }
 
-trait AwtGraphics extends CommonGraphics {
-
+abstract class ImageAwtGraphics(val imgProvider: ImageProvider, val widthHeightRatio: Double, val border: Double)
+  extends CommonGraphics {
+  
   def graphics: Graphics2D
-
-}
-
-abstract class RectangularAwtGraphics(widthHeightRatio: Double, border: Double) extends AwtGraphics {
-
-}
-
-abstract class ImageAwtGraphics(val imgProvider: ImageProvider, useKacheln: Boolean, widthHeightRatio: Double, border: Double)
-  extends RectangularAwtGraphics(widthHeightRatio, border) {
 
   def drawImage(vimg: VideoImage, pos: Pos, scale: Double): Unit = {
 	val icon = new ImageIcon(vimg.image)

@@ -46,8 +46,7 @@ class ImagesDevice(imageProvider: ImageProvider) extends Device {
     }
   }
   private def toCommonGraphics(g: Graphics2D, imageProvider: ImageProvider): CommonGraphics = {
-    val useKacheln = false
-    new ImageAwtGraphics(imageProvider, useKacheln, 0.6, 0.07) {
+    new ImageAwtGraphics(imageProvider, 0.6, 0.07) {
       def graphics: Graphics2D = g
       def drawArea: DrawArea = DrawArea(Pos(0, 0), res)
     }

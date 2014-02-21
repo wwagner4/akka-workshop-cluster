@@ -34,8 +34,7 @@ case class SwingDeviceFactory(framesPerSecond: Int) {
   private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, createGraphics)
 
   private def createGraphics(g: Graphics2D): CommonGraphics = {
-    val useKacheln = false
-    new ImageAwtGraphics(ImageProvider_V01, useKacheln, 0.6, 0.07) {
+    new ImageAwtGraphics(ImageProvider_V01, 0.6, 0.07) {
       def graphics: Graphics2D = g
       def drawArea: DrawArea = _device.determineCalcArea
     }
