@@ -1,7 +1,6 @@
 package clashcode.video
 
 case class Pos(x: Int, y: Int)
-case class Max(x: Int, y: Int)
 case class Rec(w: Int, h: Int)
 
 case class DrawArea(offset: Pos, area: Rec)
@@ -27,17 +26,15 @@ sealed trait Stage {
 
 case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) extends Stage {
 
-  val max = Max(fieldSize * 2, fieldSize * 2)
-
   def paint(g: CommonGraphics): Unit = {
     val p = StagesPainter(g, imgProvider, widthHeightRatio, border)
     p.clear
     val visibleCans = cans - robot.pos
-    p.paintField(max)
+    p.paintField(fieldSize)
     for (c <- visibleCans) {
-      p.paintCan(c, max)
+      p.paintCan(c, fieldSize)
     }
-    p.paintRobot(robot.pos, robot.dir, max)
+    p.paintRobot(robot.pos, robot.dir, fieldSize)
   }
 }
 
@@ -62,35 +59,35 @@ case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHei
     g.fillRect(x, y, w, h)
   }
 
-  def paintField(max: Max): Unit = {
+  def paintField(fieldSize: Int): Unit = {
     g.setColor(Black)
     val field = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
-    (0 to (max.x / 2) - 1).foreach(i => {
-      val fw = field.area.w / (max.x / 2)
+    (0 to (fieldSize) - 1).foreach(i => {
+      val fw = field.area.w / (fieldSize)
       val d = i * fw
       g.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h)
     })
-    (0 to (max.y / 2) - 1).foreach(i => {
-      val fh = field.area.h / (max.y / 2)
+    (0 to (fieldSize) - 1).foreach(i => {
+      val fh = field.area.h / (fieldSize)
       val d = i * fh
       g.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d)
     })
     g.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
   }
-  def paintCan(pos: Pos, max: Max) = {
+  def paintCan(pos: Pos, fieldSize: Int) = {
     val vimg = imgProvider.can
     val img = vimg.image
     val f = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
-    val epos: Pos = EffectiveOffset.calc(pos, max, f)
+    val epos: Pos = EffectiveOffset.calc(pos, fieldSize, f)
     val fw = f.area.w
     val s = fw.toDouble / vimg.shrinkFactor
     g.drawImage(vimg, epos, s)
   }
 
-  def paintRobot(pos: Pos, dir: Direction, max: Max) = {
+  def paintRobot(pos: Pos, dir: Direction, fieldSize: Int) = {
     val videoImage = imgProvider.robots(dir)
     val f = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
-    val o: Pos = EffectiveOffset.calc(pos, max, f)
+    val o: Pos = EffectiveOffset.calc(pos, fieldSize, f)
     val fw = f.area.w
     val s = fw.toDouble / videoImage.shrinkFactor
     g.drawImage(videoImage, o, s)

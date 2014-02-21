@@ -27,10 +27,10 @@ object EffectiveField {
 }
 
 object EffectiveOffset {
-  def calc (pos: Pos, max: Max, field: DrawArea): Pos = {
-    val fw = field.area.w.toDouble / max.x
+  def calc (pos: Pos, fieldSize: Int, field: DrawArea): Pos = {
+    val fw = field.area.w.toDouble / (fieldSize * 2)
     val x = field.offset.x + (fw * pos.x).toInt
-    val fh = field.area.h.toDouble / max.y
+    val fh = field.area.h.toDouble / (fieldSize * 2)
     val y = field.offset.y + (fh * pos.y).toInt
     Pos(x, y)
   }
