@@ -51,7 +51,7 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
 
 }
 
-abstract class ImageAwtGraphics(val imgProvider: ImageProvider, val widthHeightRatio: Double, val border: Double)
+abstract class ImageAwtGraphics(val widthHeightRatio: Double, val border: Double)
   extends CommonGraphics {
   
   def graphics: Graphics2D

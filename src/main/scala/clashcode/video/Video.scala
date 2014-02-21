@@ -5,15 +5,15 @@ import javax.sound.midi.Sequence
 case class Video(text: String, textDuration: Duration, code: String, gameSteps: Option[Int], seed: Long)
 
 case object VideoCreator {
-
-  def create(videos: List[Video], framesPerSecond: Int): List[NumberedStage] = {
+  
+  def create(videos: List[Video], framesPerSecond: Int, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double): List[NumberedStage] = {
 
     def createOne(video: Video): List[Stage] = {
       val txt = video.text.split("\n").toList
       val dur = video.textDuration.toMillis.toDouble / 1000
       val framesCount = math.max((framesPerSecond * dur).toInt, 1)
-      val txtStages = List.fill(framesCount)(TextStage(Text(txt)))
-      val gameStages = SceneCreator.stringCodeToStages(video.code, video.gameSteps, video.seed)
+      val txtStages = List.fill(framesCount)(TextStage(Text(txt), imgProvider, widthHeightRatio, border))
+      val gameStages = SceneCreator.stringCodeToStages(video.code, video.gameSteps, video.seed, imgProvider, widthHeightRatio, border)
       txtStages ::: gameStages
     }
 

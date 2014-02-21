@@ -29,7 +29,7 @@ class SceneCreatorSuite extends FunSuite {
 
   test("String code to scenes") {
     val strCode = "03530311022335213110315511111120251141140200400110522540004423424544141444444444142541204404414145445445424454151340002434334143"
-    val stages = SceneCreator.stringCodeToStages(strCode, None, 24234L)
+    val stages = SceneCreator.stringCodeToStages(strCode, None, 24234L, ip, 0.5, 0.01)
     assert(stages.size > 100)
   }
 
@@ -44,42 +44,46 @@ class SceneCreatorSuite extends FunSuite {
 
   val dummyCans = Set.empty[Pos]
   val fieldSize = 10;
+  val ip = ImageProvider_V01
+  val widthHeightRatio = 0.5
+  val border = 0.02
+  
 
   test("step [0 0] [0 1] robot N") {
     val step = FieldStep(FieldState(FieldPos(0, 0), items), FieldState(FieldPos(0, 1), items))
     val robot = RobotView(Pos(1, 1), N)
-    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(2))
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(2), ip, widthHeightRatio, border)
     val expectedStages = List(
-      GameStage(RobotView(Pos(1, 1), NE), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 1), E), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 1), SE), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 1), S), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 2), S), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 3), S), dummyCans, fieldSize))
+      GameStage(RobotView(Pos(1, 1), NE), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 1), E), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 1), SE), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 1), S), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 2), S), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 3), S), dummyCans, fieldSize, ip, widthHeightRatio, border))
     assert(stages === expectedStages)
   }
 
   test("step [0 0] [1 0] robot N") {
     val step = FieldStep(FieldState(FieldPos(0, 0), items), FieldState(FieldPos(1, 0), items))
     val robot = RobotView(Pos(1, 1), N)
-    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123))
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123), ip, widthHeightRatio, border)
     val expectedStages = List(
-      GameStage(RobotView(Pos(1, 1), NE), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 1), E), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(2, 1), E), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(3, 1), E), dummyCans, fieldSize))
+      GameStage(RobotView(Pos(1, 1), NE), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 1), E), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(2, 1), E), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(3, 1), E), dummyCans, fieldSize, ip, widthHeightRatio, border))
     assert(stages === expectedStages)
   }
 
   test("step [0 1] [0 0] robot W") {
     val step = FieldStep(FieldState(FieldPos(0, 1), items), FieldState(FieldPos(0, 0), items))
     val robot = RobotView(Pos(1, 3), W)
-    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123))
+    val stages: List[Stage] = PathUtil.stepToStages(step, robot, fieldSize, new Random(123), ip, widthHeightRatio, border)
     val expectedStages = List(
-      GameStage(RobotView(Pos(1, 3), NW), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 3), N), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 2), N), dummyCans, fieldSize),
-      GameStage(RobotView(Pos(1, 1), N), dummyCans, fieldSize))
+      GameStage(RobotView(Pos(1, 3), NW), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 3), N), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 2), N), dummyCans, fieldSize, ip, widthHeightRatio, border),
+      GameStage(RobotView(Pos(1, 1), N), dummyCans, fieldSize, ip, widthHeightRatio, border))
     assert(stages === expectedStages)
   }
 

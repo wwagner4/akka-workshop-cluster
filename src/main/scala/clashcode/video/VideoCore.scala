@@ -25,12 +25,12 @@ sealed trait Stage {
   def paint(g: CommonGraphics): Unit
 }
 
-case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int) extends Stage {
+case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) extends Stage {
 
   val max = Max(fieldSize * 2, fieldSize * 2)
 
   def paint(g: CommonGraphics): Unit = {
-    val p = GamePainter(g)
+    val p = GamePainter(g, imgProvider, 0.5, 0.05)
     p.clear
     val visibleCans = cans - robot.pos
     p.paintField(max)
@@ -41,15 +41,16 @@ case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int) extends S
   }
 }
 
-case class TextStage(text: Text) extends Stage {
+case class TextStage(text: Text, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) extends Stage {
   def paint(g: CommonGraphics): Unit = {
-    val p = GamePainter(g)
+    val p = GamePainter(g, imgProvider, widthHeightRatio, border)
     p.clear
     p.paintText(text)
   }
 }
+  
 
-case class GamePainter(g: CommonGraphics) {
+case class GamePainter(g: CommonGraphics, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) {
 
   def clear: Unit = {
     g.setColor(White)
@@ -62,7 +63,7 @@ case class GamePainter(g: CommonGraphics) {
 
   def paintField(max: Max): Unit = {
     g.setColor(Black)
-    val field = EffectiveField.calc(g.drawArea, g.widthHeightRatio, g.border)
+    val field = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
     (0 to (max.x / 2) - 1).foreach(i => {
       val fw = field.area.w / (max.x / 2)
       val d = i * fw
@@ -76,9 +77,9 @@ case class GamePainter(g: CommonGraphics) {
     g.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
   }
   def paintCan(pos: Pos, max: Max) = {
-    val vimg = g.imgProvider.can
+    val vimg = imgProvider.can
     val img = vimg.image
-    val f = EffectiveField.calc(g.drawArea, g.widthHeightRatio, g.border)
+    val f = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
     val epos: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
     val s = fw.toDouble / vimg.shrinkFactor
@@ -86,8 +87,8 @@ case class GamePainter(g: CommonGraphics) {
   }
 
   def paintRobot(pos: Pos, dir: Direction, max: Max) = {
-    val videoImage = g.imgProvider.robots(dir)
-    val f = EffectiveField.calc(g.drawArea, g.widthHeightRatio, g.border)
+    val videoImage = imgProvider.robots(dir)
+    val f = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, max, f)
     val fw = f.area.w
     val s = fw.toDouble / videoImage.shrinkFactor
@@ -165,10 +166,6 @@ trait ImageProvider {
 
 trait CommonGraphics {
 
-  def imgProvider: ImageProvider
-
-  def widthHeightRatio: Double
-  def border: Double
   def drawArea: DrawArea
 
   def drawImage(vimg: VideoImage, pos: Pos, scale: Double)
