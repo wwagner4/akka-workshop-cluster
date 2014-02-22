@@ -12,7 +12,6 @@ case class Path(path: List[FieldState], fieldSize: Int)
 
 case object SceneCreator {
 
-  // TODO Check if StageParams as parameter are better
   def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long, params: StageParams): List[Stage] = {
     val ran = new Random(seed)
 
@@ -20,8 +19,7 @@ case object SceneCreator {
       case Nil => Nil
       case head :: tail => {
         val stages = PathUtil.stepToStages(head, preRobot, params, ran)
-        // TODO See how to remove that asInstanceOf
-        val lastRobot = stages.last.asInstanceOf[GameStage].robot
+        val lastRobot = stages.last.robot
         stages ::: stepsToStages(tail, lastRobot, fieldSize)
       }
     }
@@ -118,15 +116,14 @@ case object PathUtil {
 
   def mapPos(in: List[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1)).toSet
 
-  // TODO Check if params are good here or better in Stage::paint
-  def stepToStages(step: FieldStep, robot: RobotView, params: StageParams, ran: Random): List[Stage] = {
-    def turn(nextDir: Direction): List[Stage] = {
+  def stepToStages(step: FieldStep, robot: RobotView, params: StageParams, ran: Random): List[GameStage] = {
+    def turn(nextDir: Direction): List[GameStage] = {
       val prevDir = robot.dir
       val diff = DirectionUtil.diff(prevDir, nextDir)
       val tl = DirectionUtil.turnList(robot.dir, diff)
       tl.map(d => GameStage(RobotView(robot.pos, d), mapPos(step.from.items), params))
     }
-    def move(nextDir: Direction): List[Stage] = nextDir match {
+    def move(nextDir: Direction): List[GameStage] = nextDir match {
       case N => List(
         GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), mapPos(step.from.items), params),
         GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), mapPos(step.to.items), params))
