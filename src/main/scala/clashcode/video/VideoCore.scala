@@ -55,7 +55,6 @@ case class TextStage(text: Text) extends Stage {
   
 // TODO Move methods to Stages
 case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) {
-  
 
   def clear(drawArea: DrawArea): Unit = {
     g.setColor(White)

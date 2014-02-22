@@ -14,8 +14,7 @@ import java.awt.image.BufferedImage
 import scala.util.Random
 import javax.swing.ImageIcon
 
-// TODO Having a lambda here seems to be overdone
-case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics, params: StageParams)
+case class SwingDevice(framesPerSecond: Int, params: StageParams)
   extends Device {
 
   var _stage: Option[NumberedStage] = None
@@ -35,9 +34,10 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics, pa
       DrawArea(Pos(0, 0), Rec(this.size.width, this.size.height))
     }
     override def paint(awtg: Graphics2D): Unit = {
+      val cg: CommonGraphics = new ImageAwtGraphics(awtg)
       _stage match {
         case Some(s) => {
-          s.stage.paint(f(awtg), () => determineCalcArea, params)
+          s.stage.paint(cg, () => determineCalcArea, params)
         }
         case None => // Nothing to be done
       }
