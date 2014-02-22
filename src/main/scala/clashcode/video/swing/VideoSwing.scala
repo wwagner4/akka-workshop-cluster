@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage
 import scala.util.Random
 import javax.swing.ImageIcon
 
+// TODO Having a lambda here seems to be overdone
 case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
   extends Device {
 
@@ -32,7 +33,10 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
 
     override def paint(awtg: Graphics2D): Unit = {
       _stage match {
-        case Some(s) => s.stage.paint(f(awtg))
+        case Some(s) => {
+          val stageParams = StageParams(10, ImageProvider_V02, 0.7, 0.06)
+          s.stage.paint(f(awtg), stageParams)
+        }
         case None => // Nothing to be done
       }
     }
@@ -51,14 +55,13 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics)
 
 }
 
-abstract class ImageAwtGraphics(val widthHeightRatio: Double, val border: Double)
-  extends CommonGraphics {
-  
+abstract class ImageAwtGraphics extends CommonGraphics {
+
   def graphics: Graphics2D
 
   def drawImage(vimg: VideoImage, pos: Pos, scale: Double): Unit = {
-	val icon = new ImageIcon(vimg.image)
-	val imgoffx = (icon.getIconWidth().toDouble * scale * vimg.centerx).toInt
+    val icon = new ImageIcon(vimg.image)
+    val imgoffx = (icon.getIconWidth().toDouble * scale * vimg.centerx).toInt
     val imgoffy = (icon.getIconHeight().toDouble * scale * vimg.centery).toInt
     val transform = AffineTransform.getTranslateInstance(pos.x - imgoffx, pos.y - imgoffy)
     transform.concatenate(AffineTransform.getScaleInstance(scale, scale))

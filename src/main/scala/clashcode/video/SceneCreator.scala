@@ -12,13 +12,13 @@ case class Path(path: List[FieldState], fieldSize: Int)
 
 case object SceneCreator {
 
-  def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long, params: StageParams): List[Stage] = {
+  def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long): List[Stage] = {
     val ran = new Random(seed)
 
     def stepsToStages(steps: List[FieldStep], preRobot: RobotView, fieldSize: Int): List[Stage] = steps match {
       case Nil => Nil
       case head :: tail => {
-        val stages = PathUtil.stepToStages(head, preRobot, params, ran)
+        val stages = PathUtil.stepToStages(head, preRobot, fieldSize, ran)
         val lastRobot = stages.last.robot
         stages ::: stepsToStages(tail, lastRobot, fieldSize)
       }
@@ -116,26 +116,26 @@ case object PathUtil {
 
   def mapPos(in: List[FieldPos]): Set[Pos] = in.map(p => Pos(p.x * 2 + 1, p.y * 2 + 1)).toSet
 
-  def stepToStages(step: FieldStep, robot: RobotView, params: StageParams, ran: Random): List[GameStage] = {
+  def stepToStages(step: FieldStep, robot: RobotView, fieldSize: Int, ran: Random): List[GameStage] = {
     def turn(nextDir: Direction): List[GameStage] = {
       val prevDir = robot.dir
       val diff = DirectionUtil.diff(prevDir, nextDir)
       val tl = DirectionUtil.turnList(robot.dir, diff)
-      tl.map(d => GameStage(RobotView(robot.pos, d), mapPos(step.from.items), params))
+      tl.map(d => GameStage(RobotView(robot.pos, d), mapPos(step.from.items)))
     }
     def move(nextDir: Direction): List[GameStage] = nextDir match {
       case N => List(
-        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), mapPos(step.from.items), params),
-        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), mapPos(step.to.items), params))
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 1), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y - 2), nextDir), mapPos(step.to.items)))
       case E => List(
-        GameStage(RobotView(Pos(robot.pos.x + 1, robot.pos.y), nextDir), mapPos(step.from.items), params),
-        GameStage(RobotView(Pos(robot.pos.x + 2, robot.pos.y), nextDir), mapPos(step.to.items), params))
+        GameStage(RobotView(Pos(robot.pos.x + 1, robot.pos.y), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x + 2, robot.pos.y), nextDir), mapPos(step.to.items)))
       case S => List(
-        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y + 1), nextDir), mapPos(step.from.items), params),
-        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), mapPos(step.to.items), params))
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y + 1), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x, robot.pos.y + 2), nextDir), mapPos(step.to.items)))
       case W => List(
-        GameStage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), mapPos(step.from.items), params),
-        GameStage(RobotView(Pos(robot.pos.x - 2, robot.pos.y), nextDir), mapPos(step.to.items), params))
+        GameStage(RobotView(Pos(robot.pos.x - 1, robot.pos.y), nextDir), mapPos(step.from.items)),
+        GameStage(RobotView(Pos(robot.pos.x - 2, robot.pos.y), nextDir), mapPos(step.to.items)))
       case _ => throw new IllegalArgumentException(s"Robot can only move N, E, S or W. Not $nextDir")
     }
     if (step.from.robot.x == step.to.robot.x && step.from.robot.y == step.to.robot.y) {
@@ -143,10 +143,10 @@ case object PathUtil {
       val nextDir = if (ran.nextBoolean) DirectionUtil.turnRight(robot.dir)
       else DirectionUtil.turnLeft(robot.dir)
       val nextRobot = RobotView(robot.pos, nextDir)
-      List(GameStage(robot, mapPos(step.to.items), params))
+      List(GameStage(robot, mapPos(step.to.items)))
     } else {
       // Robot moved
-      val ndir: Direction = nextDirection(step, params.fieldSize)
+      val ndir: Direction = nextDirection(step, fieldSize)
       val turns = turn(ndir)
       val moves = move(ndir)
       turns ::: moves

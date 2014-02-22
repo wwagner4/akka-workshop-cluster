@@ -1,18 +1,11 @@
 package clashcode.video.swing
 
-import clashcode.video.Device
-import clashcode.video.Stage
+import java.awt.{Graphics2D, RenderingHints}
 import java.awt.image.BufferedImage
-import java.awt.Graphics2D
-import java.awt.RenderingHints
-import clashcode.video.CommonGraphics
-import clashcode.video.Pos
-import clashcode.video.DrawArea
-import clashcode.video.Rec
-import javax.imageio.ImageIO
 import java.io.File
-import clashcode.video.NumberedStage
-import clashcode.video.ImageProvider
+
+import clashcode.video.{CommonGraphics, Device, DrawArea, ImageProvider_V01, NumberedStage, Pos, Rec, StageParams}
+import javax.imageio.ImageIO
 
 class ImagesDevice extends Device {
 
@@ -22,13 +15,15 @@ class ImagesDevice extends Device {
   //val res = Rec(1600, 900)
   //val res = Rec(640, 360)
   val imgFormat = "png" // jpg, png
+    
+  val stageParams = StageParams(10, ImageProvider_V01, 0.6, 0.03)
 
   def paintStage(stage: NumberedStage): Unit = {
     val bi = new BufferedImage(res.w, res.h, BufferedImage.TYPE_INT_RGB)
     val g2 = bi.createGraphics();
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     val cg = toCommonGraphics(g2)
-    stage.stage.paint(cg)
+    stage.stage.paint(cg, stageParams)
 
     val home = new File(System.getProperty("user.home"))
     val outDir = new File(home, "video")
@@ -46,7 +41,7 @@ class ImagesDevice extends Device {
     }
   }
   private def toCommonGraphics(g: Graphics2D): CommonGraphics = {
-    new ImageAwtGraphics(0.6, 0.07) {
+    new ImageAwtGraphics {
       def graphics: Graphics2D = g
       def drawArea: DrawArea = DrawArea(Pos(0, 0), res)
     }

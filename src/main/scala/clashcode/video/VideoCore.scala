@@ -26,12 +26,12 @@ case class StageParams(
     widthHeightRatio: Double, border: Double)
 
 sealed trait Stage {
-  def paint(g: CommonGraphics): Unit
+  def paint(g: CommonGraphics, params: StageParams): Unit
 }
 
-case class GameStage(robot: RobotView, cans: Set[Pos], params: StageParams) extends Stage {
+case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
 
-  def paint(g: CommonGraphics): Unit = {
+  def paint(g: CommonGraphics, params: StageParams): Unit = {
     val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
     p.clear
     val visibleCans = cans - robot.pos
@@ -44,7 +44,7 @@ case class GameStage(robot: RobotView, cans: Set[Pos], params: StageParams) exte
 }
 
 case class TextStage(text: Text, params: StageParams) extends Stage {
-  def paint(g: CommonGraphics): Unit = {
+  def paint(g: CommonGraphics, params: StageParams): Unit = {
     val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
     p.clear
     p.paintText(text)

@@ -13,7 +13,7 @@ case object VideoCreator {
       val dur = video.textDuration.toMillis.toDouble / 1000
       val framesCount = math.max((framesPerSecond * dur).toInt, 1)
       val txtStages = List.fill(framesCount)(TextStage(Text(txt), params))
-      val gameStages = SceneCreator.stringCodeToStages(video.code, video.gameSteps, video.seed, params)
+      val gameStages = SceneCreator.stringCodeToStages(video.code, video.gameSteps, video.seed)
       txtStages ::: gameStages
     }
 
