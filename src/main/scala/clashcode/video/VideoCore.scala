@@ -20,27 +20,32 @@ case class RobotView(pos: Pos, dir: Direction)
 
 case class NumberedStage(nr: Int, stage: Stage)
 
+case class StageParams(
+    fieldSize: Int, 
+    imgProvider: ImageProvider, 
+    widthHeightRatio: Double, border: Double)
+
 sealed trait Stage {
   def paint(g: CommonGraphics): Unit
 }
 
-case class GameStage(robot: RobotView, cans: Set[Pos], fieldSize: Int, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) extends Stage {
+case class GameStage(robot: RobotView, cans: Set[Pos], params: StageParams) extends Stage {
 
   def paint(g: CommonGraphics): Unit = {
-    val p = StagesPainter(g, imgProvider, widthHeightRatio, border)
+    val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
     p.clear
     val visibleCans = cans - robot.pos
-    p.paintField(fieldSize)
+    p.paintField(params.fieldSize)
     for (c <- visibleCans) {
-      p.paintCan(c, fieldSize)
+      p.paintCan(c, params.fieldSize)
     }
-    p.paintRobot(robot.pos, robot.dir, fieldSize)
+    p.paintRobot(robot.pos, robot.dir, params.fieldSize)
   }
 }
 
-case class TextStage(text: Text, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) extends Stage {
+case class TextStage(text: Text, params: StageParams) extends Stage {
   def paint(g: CommonGraphics): Unit = {
-    val p = StagesPainter(g, imgProvider, widthHeightRatio, border)
+    val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
     p.clear
     p.paintText(text)
   }

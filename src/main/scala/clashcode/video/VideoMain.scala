@@ -17,7 +17,8 @@ object VideoMain extends App {
 
   val vl = List(AkkaWorkshopResultsVideos.v001)
  
-  val stages = VideoCreator.create(vl, framesPerSecond, ImageProvider_V01, 0.5, 0.1)
+  val params = StageParams(10, ImageProvider_V01, 0.5, 0.1)
+  val stages = VideoCreator.create(vl, framesPerSecond, params)
   
   val device: Device = SwingDeviceFactory(framesPerSecond).device
   //val device: Device = new ImagesDevice
