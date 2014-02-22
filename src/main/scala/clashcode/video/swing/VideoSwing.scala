@@ -54,9 +54,7 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics, pa
 
 }
 
-abstract class ImageAwtGraphics extends CommonGraphics {
-
-  def graphics: Graphics2D
+abstract class ImageAwtGraphics(graphics: Graphics2D) extends CommonGraphics {
 
   def drawImage(vimg: VideoImage, pos: Pos, scale: Double): Unit = {
     val icon = new ImageIcon(vimg.image)

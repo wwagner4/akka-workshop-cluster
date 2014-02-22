@@ -33,8 +33,7 @@ object VideoMain extends App {
     private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, createGraphics, params)
 
     private def createGraphics(g: Graphics2D): CommonGraphics = {
-      new ImageAwtGraphics {
-        def graphics: Graphics2D = g
+      new ImageAwtGraphics(g) {
         def drawArea: DrawArea = _device.determineCalcArea
       }
     }

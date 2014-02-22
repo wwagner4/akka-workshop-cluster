@@ -41,8 +41,7 @@ class ImagesDevice extends Device {
     }
   }
   private def toCommonGraphics(g: Graphics2D): CommonGraphics = {
-    new ImageAwtGraphics {
-      def graphics: Graphics2D = g
+    new ImageAwtGraphics(g) {
       def drawArea: DrawArea = DrawArea(Pos(0, 0), res)
     }
   }
