@@ -16,14 +16,35 @@ case object SW extends Direction
 case object W extends Direction
 case object NW extends Direction
 
-case class RobotView(pos: Pos, dir: Direction)
+trait ImageProvider {
 
-case class NumberedStage(nr: Int, stage: Stage)
+  def robots: Map[Direction, VideoImage]
+  def can: VideoImage
+
+}
 
 case class StageParams(
   fieldSize: Int,
   imgProvider: ImageProvider,
   widthHeightRatio: Double, border: Double)
+
+sealed trait CommonColor
+case object Black extends CommonColor
+case object White extends CommonColor
+
+case class VideoImage(image: java.net.URL, centerx: Double, centery: Double, shrinkFactor: Int)
+
+trait CommonGraphics {
+
+  def drawImage(vimg: VideoImage, pos: Pos, scale: Double)
+  def setColor(c: CommonColor)
+  def drawLine(fromx: Int, fromy: Int, tox: Int, toy: Int)
+  def drawRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
+  def fillRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
+  def setFontSize(size: Double)
+  def drawString(str: String, x: Int, y: Int)
+
+}
 
 sealed trait Stage {
   
@@ -41,6 +62,9 @@ sealed trait Stage {
   }
 
 }
+
+case class RobotView(pos: Pos, dir: Direction)
+
 
 case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
 
@@ -85,17 +109,19 @@ case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
   }
 }
 
+case class Text(lines: List[String])
+
 case class TextStage(text: Text) extends Stage {
   def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
 
     def paintText(text: Text, drawArea: DrawArea) = {
       g.setColor(Black)
-      val fontSize = drawArea.area.h.toFloat / 25
+      val fontSize = drawArea.area.h.toFloat / 20
       g.setFontSize(fontSize)
       val lines = text.lines
       for (i <- 0 until lines.size) {
         if (i == 1) {
-          val fontSize = drawArea.area.h.toFloat / 30
+          val fontSize = drawArea.area.h.toFloat / 40
           g.setFontSize(fontSize)
         }
         val y = (10 + fontSize * (i + 1)).toInt
@@ -108,6 +134,8 @@ case class TextStage(text: Text) extends Stage {
     paintText(text, da)
   }
 }
+
+case class NumberedStage(nr: Int, stage: Stage)
 
 trait Device {
 
@@ -137,43 +165,11 @@ trait Device {
 
 }
 
-/**
- * Abstraction level for Graphics
- * Can, but must not be used from Device implementations
- */
-case class Text(lines: List[String])
-
-sealed trait CommonColor
-case object Black extends CommonColor
-case object White extends CommonColor
-
-case class VideoImage(image: java.net.URL, centerx: Double, centery: Double, shrinkFactor: Int)
-
-trait ImageProvider {
-
-  def robots: Map[Direction, VideoImage]
-  def can: VideoImage
+object ImageProvider_V02 extends ImageProvider {
 
   def img(resName: String): java.net.URL = {
     this.getClass().getClassLoader().getResource(resName)
   }
-
-}
-
-// TODO Simplfy the methods
-trait CommonGraphics {
-
-  def drawImage(vimg: VideoImage, pos: Pos, scale: Double)
-  def setColor(c: CommonColor)
-  def drawLine(fromx: Int, fromy: Int, tox: Int, toy: Int)
-  def drawRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
-  def fillRect(p1x: Int, p1y: Int, p2x: Int, p2y: Int)
-  def setFontSize(size: Double)
-  def drawString(str: String, x: Int, y: Int)
-
-}
-
-object ImageProvider_V02 extends ImageProvider {
 
   lazy val robots: Map[Direction, VideoImage] = {
     val imgNames = List(
@@ -194,6 +190,10 @@ object ImageProvider_V02 extends ImageProvider {
 }
 
 object ImageProvider_V01 extends ImageProvider {
+
+  def img(resName: String): java.net.URL = {
+    this.getClass().getClassLoader().getResource(resName)
+  }
 
   lazy val robots: Map[Direction, VideoImage] = {
     val imgNames = List(
