@@ -6,13 +6,13 @@ case class Video(text: String, textDuration: Duration, code: String, gameSteps: 
 
 case object VideoCreator {
   
-  def create(videos: List[Video], framesPerSecond: Int, params: StageParams): List[NumberedStage] = {
+  def create(videos: List[Video], framesPerSecond: Int): List[NumberedStage] = {
 
     def createOne(video: Video): List[Stage] = {
       val txt = video.text.split("\n").toList
       val dur = video.textDuration.toMillis.toDouble / 1000
       val framesCount = math.max((framesPerSecond * dur).toInt, 1)
-      val txtStages = List.fill(framesCount)(TextStage(Text(txt), params))
+      val txtStages = List.fill(framesCount)(TextStage(Text(txt)))
       val gameStages = SceneCreator.stringCodeToStages(video.code, video.gameSteps, video.seed)
       txtStages ::: gameStages
     }

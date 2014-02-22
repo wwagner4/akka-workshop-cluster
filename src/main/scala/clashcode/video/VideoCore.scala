@@ -43,7 +43,7 @@ case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
   }
 }
 
-case class TextStage(text: Text, params: StageParams) extends Stage {
+case class TextStage(text: Text) extends Stage {
   def paint(g: CommonGraphics, params: StageParams): Unit = {
     val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
     p.clear

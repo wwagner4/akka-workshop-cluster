@@ -7,7 +7,7 @@ import clashcode.video.lists._
 
 object VideoMain extends App {
 
-  val framesPerSecond = 14
+  val framesPerSecond = 20
 
   //val vl = AkkaWorkshopPresentationVideos.videos
   //val vl = AkkaWorkshopWinnerVideos.winner
@@ -16,28 +16,28 @@ object VideoMain extends App {
   //val vl = AkkaWorkshopWinnerVideos.stuck
 
   val vl = List(AkkaWorkshopResultsVideos.v001)
- 
-  val params = StageParams(10, ImageProvider_V01, 0.5, 0.1)
-  val stages = VideoCreator.create(vl, framesPerSecond, params)
-  
+
+  val params = StageParams(10, ImageProvider_V01, 0.7, 0.1)
+  val stages = VideoCreator.create(vl, framesPerSecond)
+
   val device: Device = SwingDeviceFactory(framesPerSecond).device
   //val device: Device = new ImagesDevice
-  
+
   device.playOnes(stages)
   //device.playEndless(stages)
 
-}
+  case class SwingDeviceFactory(framesPerSecond: Int) {
 
-case class SwingDeviceFactory(framesPerSecond: Int) {
+    def device: Device = _device
 
-  def device: Device = _device
+    private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, createGraphics, params)
 
-  private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, createGraphics)
-
-  private def createGraphics(g: Graphics2D): CommonGraphics = {
-    new ImageAwtGraphics {
-      def graphics: Graphics2D = g
-      def drawArea: DrawArea = _device.determineCalcArea
+    private def createGraphics(g: Graphics2D): CommonGraphics = {
+      new ImageAwtGraphics {
+        def graphics: Graphics2D = g
+        def drawArea: DrawArea = _device.determineCalcArea
+      }
     }
   }
 }
+
