@@ -20,10 +20,11 @@ class ImagesDevice extends Device {
 
   def paintStage(stage: NumberedStage): Unit = {
     val bi = new BufferedImage(res.w, res.h, BufferedImage.TYPE_INT_RGB)
+    val da = DrawArea(Pos(0, 0), Rec(res.w, res.h))
     val g2 = bi.createGraphics();
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     val cg = toCommonGraphics(g2)
-    stage.stage.paint(cg, stageParams)
+    stage.stage.paint(cg, () => da, stageParams)
 
     val home = new File(System.getProperty("user.home"))
     val outDir = new File(home, "video")

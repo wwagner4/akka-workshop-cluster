@@ -31,10 +31,13 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics, pa
 
   val panel = new Panel {
 
+    def determineCalcArea: DrawArea = {
+      DrawArea(Pos(0, 0), Rec(this.size.width, this.size.height))
+    }
     override def paint(awtg: Graphics2D): Unit = {
       _stage match {
         case Some(s) => {
-          s.stage.paint(f(awtg), params)
+          s.stage.paint(f(awtg), () => determineCalcArea, params)
         }
         case None => // Nothing to be done
       }
@@ -48,13 +51,9 @@ case class SwingDevice(framesPerSecond: Int, f: Graphics2D => CommonGraphics, pa
   mf.size = mf.toolkit.getScreenSize()
   mf.visible = true;
 
-  def determineCalcArea: DrawArea = {
-    DrawArea(Pos(0, 0), Rec(panel.size.width, panel.size.height))
-  }
-
 }
 
-abstract class ImageAwtGraphics(graphics: Graphics2D) extends CommonGraphics {
+case class ImageAwtGraphics(graphics: Graphics2D) extends CommonGraphics {
 
   def drawImage(vimg: VideoImage, pos: Pos, scale: Double): Unit = {
     val icon = new ImageIcon(vimg.image)
@@ -84,8 +83,7 @@ abstract class ImageAwtGraphics(graphics: Graphics2D) extends CommonGraphics {
   }
   def setFontSize(size: Double): Unit = {
     val font = graphics.getFont()
-    val fontSize = drawArea.area.h.toFloat / 25
-    graphics.setFont(font.deriveFont(fontSize))
+    graphics.setFont(font.deriveFont(size.toFloat))
   }
 
 }

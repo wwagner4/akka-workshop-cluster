@@ -13,9 +13,8 @@ object VideoMain extends App {
   //val vl = AkkaWorkshopWinnerVideos.winner
   //val vl = AkkaWorkshopWinnerVideos.next
   //val vl = AkkaWorkshopWinnerVideos.noPhilip
-  //val vl = AkkaWorkshopWinnerVideos.stuck
-
-  val vl = List(AkkaWorkshopResultsVideos.v001)
+  val vl = AkkaWorkshopWinnerVideos.stuck
+  //val vl = List(AkkaWorkshopResultsVideos.v001)
 
   val params = StageParams(10, ImageProvider_V01, 0.7, 0.1)
   val stages = VideoCreator.create(vl, framesPerSecond)
@@ -32,11 +31,8 @@ object VideoMain extends App {
 
     private lazy val _device: SwingDevice = new SwingDevice(framesPerSecond, createGraphics, params)
 
-    private def createGraphics(g: Graphics2D): CommonGraphics = {
-      new ImageAwtGraphics(g) {
-        def drawArea: DrawArea = _device.determineCalcArea
-      }
-    }
+    private def createGraphics(g: Graphics2D): CommonGraphics = ImageAwtGraphics(g) 
+
   }
 }
 

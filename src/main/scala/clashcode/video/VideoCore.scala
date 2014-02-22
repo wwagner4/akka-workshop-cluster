@@ -26,47 +26,49 @@ case class StageParams(
     widthHeightRatio: Double, border: Double)
 
 sealed trait Stage {
-  def paint(g: CommonGraphics, params: StageParams): Unit
+  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit
 }
 
 case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
 
-  def paint(g: CommonGraphics, params: StageParams): Unit = {
+  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
     val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
-    p.clear
+    val da = drawArea()
+    p.clear(da)
     val visibleCans = cans - robot.pos
-    p.paintField(params.fieldSize)
+    p.paintField(params.fieldSize, da)
     for (c <- visibleCans) {
-      p.paintCan(c, params.fieldSize)
+      p.paintCan(c, params.fieldSize, da)
     }
-    p.paintRobot(robot.pos, robot.dir, params.fieldSize)
+    p.paintRobot(robot.pos, robot.dir, params.fieldSize, da)
   }
 }
 
 case class TextStage(text: Text) extends Stage {
-  def paint(g: CommonGraphics, params: StageParams): Unit = {
+  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
     val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
-    p.clear
-    p.paintText(text)
+    val da = drawArea()
+    p.clear(da)
+    p.paintText(text, da)
   }
 }
   
-
+// TODO Move methods to Stages
 case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) {
   
 
-  def clear: Unit = {
+  def clear(drawArea: DrawArea): Unit = {
     g.setColor(White)
-    val x = g.drawArea.offset.x
-    val y = g.drawArea.offset.y
-    val w = g.drawArea.area.w
-    val h = g.drawArea.area.h
+    val x = drawArea.offset.x
+    val y = drawArea.offset.y
+    val w = drawArea.area.w
+    val h = drawArea.area.h
     g.fillRect(x, y, w, h)
   }
 
-  def paintField(fieldSize: Int): Unit = {
+  def paintField(fieldSize: Int, drawArea: DrawArea): Unit = {
     g.setColor(Black)
-    val field = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
+    val field = EffectiveField.calc(drawArea, widthHeightRatio, border)
     (0 to (fieldSize) - 1).foreach(i => {
       val fw = field.area.w / (fieldSize)
       val d = i * fw
@@ -79,32 +81,32 @@ case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHei
     })
     g.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
   }
-  def paintCan(pos: Pos, fieldSize: Int) = {
+  def paintCan(pos: Pos, fieldSize: Int, drawArea: DrawArea) = {
     val vimg = imgProvider.can
     val img = vimg.image
-    val f = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
+    val f = EffectiveField.calc(drawArea, widthHeightRatio, border)
     val epos: Pos = EffectiveOffset.calc(pos, fieldSize, f)
     val fw = f.area.w
     val s = fw.toDouble / vimg.shrinkFactor
     g.drawImage(vimg, epos, s)
   }
 
-  def paintRobot(pos: Pos, dir: Direction, fieldSize: Int) = {
+  def paintRobot(pos: Pos, dir: Direction, fieldSize: Int, drawArea: DrawArea) = {
     val videoImage = imgProvider.robots(dir)
-    val f = EffectiveField.calc(g.drawArea, widthHeightRatio, border)
+    val f = EffectiveField.calc(drawArea, widthHeightRatio, border)
     val o: Pos = EffectiveOffset.calc(pos, fieldSize, f)
     val fw = f.area.w
     val s = fw.toDouble / videoImage.shrinkFactor
     g.drawImage(videoImage, o, s)
   }
-  def paintText(text: Text) = {
+  def paintText(text: Text, drawArea: DrawArea) = {
     g.setColor(Black)
-    val fontSize = g.drawArea.area.h.toFloat / 25
+    val fontSize = drawArea.area.h.toFloat / 25
     g.setFontSize(fontSize)
     val lines = text.lines
     for (i <- 0 until lines.size) {
       if (i == 1) {
-	    val fontSize = g.drawArea.area.h.toFloat / 30
+	    val fontSize = drawArea.area.h.toFloat / 30
 	    g.setFontSize(fontSize)
       }
       val y = (10 + fontSize * (i + 1)).toInt
@@ -167,9 +169,8 @@ trait ImageProvider {
 
 }
 
+// TODO Simplfy the methods
 trait CommonGraphics {
-
-  def drawArea: DrawArea
 
   def drawImage(vimg: VideoImage, pos: Pos, scale: Double)
   def setColor(c: CommonColor)
