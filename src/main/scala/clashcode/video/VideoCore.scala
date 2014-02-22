@@ -21,42 +21,17 @@ case class RobotView(pos: Pos, dir: Direction)
 case class NumberedStage(nr: Int, stage: Stage)
 
 case class StageParams(
-    fieldSize: Int, 
-    imgProvider: ImageProvider, 
-    widthHeightRatio: Double, border: Double)
+  fieldSize: Int,
+  imgProvider: ImageProvider,
+  widthHeightRatio: Double, border: Double)
 
 sealed trait Stage {
-  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit
-}
-
-case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
-
-  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
-    val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
-    val da = drawArea()
-    p.clear(da)
-    val visibleCans = cans - robot.pos
-    p.paintField(params.fieldSize, da)
-    for (c <- visibleCans) {
-      p.paintCan(c, params.fieldSize, da)
-    }
-    p.paintRobot(robot.pos, robot.dir, params.fieldSize, da)
-  }
-}
-
-case class TextStage(text: Text) extends Stage {
-  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
-    val p = StagesPainter(g, params.imgProvider, params.widthHeightRatio, params.border)
-    val da = drawArea()
-    p.clear(da)
-    p.paintText(text, da)
-  }
-}
   
-// TODO Move methods to Stages
-case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHeightRatio: Double, border: Double) {
+  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit
 
-  def clear(drawArea: DrawArea): Unit = {
+  // Utillity methods to be used in the implementation of paint
+  
+  def clear(g: CommonGraphics, drawArea: DrawArea): Unit = {
     g.setColor(White)
     val x = drawArea.offset.x
     val y = drawArea.offset.y
@@ -65,55 +40,73 @@ case class StagesPainter(g: CommonGraphics, imgProvider: ImageProvider, widthHei
     g.fillRect(x, y, w, h)
   }
 
-  def paintField(fieldSize: Int, drawArea: DrawArea): Unit = {
-    g.setColor(Black)
-    val field = EffectiveField.calc(drawArea, widthHeightRatio, border)
-    (0 to (fieldSize) - 1).foreach(i => {
-      val fw = field.area.w / (fieldSize)
-      val d = i * fw
-      g.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h)
-    })
-    (0 to (fieldSize) - 1).foreach(i => {
-      val fh = field.area.h / (fieldSize)
-      val d = i * fh
-      g.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d)
-    })
-    g.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
-  }
-  def paintCan(pos: Pos, fieldSize: Int, drawArea: DrawArea) = {
-    val vimg = imgProvider.can
-    val img = vimg.image
-    val f = EffectiveField.calc(drawArea, widthHeightRatio, border)
-    val epos: Pos = EffectiveOffset.calc(pos, fieldSize, f)
-    val fw = f.area.w
-    val s = fw.toDouble / vimg.shrinkFactor
-    g.drawImage(vimg, epos, s)
-  }
+}
 
-  def paintRobot(pos: Pos, dir: Direction, fieldSize: Int, drawArea: DrawArea) = {
-    val videoImage = imgProvider.robots(dir)
-    val f = EffectiveField.calc(drawArea, widthHeightRatio, border)
-    val o: Pos = EffectiveOffset.calc(pos, fieldSize, f)
-    val fw = f.area.w
-    val s = fw.toDouble / videoImage.shrinkFactor
-    g.drawImage(videoImage, o, s)
-  }
-  def paintText(text: Text, drawArea: DrawArea) = {
-    g.setColor(Black)
-    val fontSize = drawArea.area.h.toFloat / 25
-    g.setFontSize(fontSize)
-    val lines = text.lines
-    for (i <- 0 until lines.size) {
-      if (i == 1) {
-	    val fontSize = drawArea.area.h.toFloat / 30
-	    g.setFontSize(fontSize)
-      }
-      val y = (10 + fontSize * (i + 1)).toInt
-      g.drawString(lines(i), 30, y)
+case class GameStage(robot: RobotView, cans: Set[Pos]) extends Stage {
+
+  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
+
+    // Calculate the current DrawArea
+    val da = drawArea()
+
+    def paintField: Unit = {
+      g.setColor(Black)
+      val field = EffectiveField.calc(da, params.widthHeightRatio, params.border)
+      (0 to (params.fieldSize) - 1).foreach(i => {
+        val fw = field.area.w / (params.fieldSize)
+        val d = i * fw
+        g.drawLine(field.offset.x + d, field.offset.y, field.offset.x + d, field.offset.y + field.area.h)
+      })
+      (0 to (params.fieldSize) - 1).foreach(i => {
+        val fh = field.area.h / (params.fieldSize)
+        val d = i * fh
+        g.drawLine(field.offset.x, field.offset.y + d, field.offset.x + field.area.w, field.offset.y + d)
+      })
+      g.drawRect(field.offset.x, field.offset.y, field.area.w, field.area.h)
     }
+    def paintVideoImage(vimg: VideoImage, pos: Pos): Unit = {
+      val effField = EffectiveField.calc(da, params.widthHeightRatio, params.border)
+      val effPos: Pos = EffectiveOffset.calc(pos, params.fieldSize, effField)
+      val scale = effField.area.w.toDouble / vimg.shrinkFactor
+      g.drawImage(vimg, effPos, scale)
+    } 
+
+    def paintRobot(pos: Pos, dir: Direction): Unit = {
+      paintVideoImage(params.imgProvider.robots(dir), pos)
+    }
+
+    clear(g, da)
+    val visibleCans = cans - robot.pos
+    paintField
+    for (canPos <- visibleCans) {
+    	paintVideoImage(params.imgProvider.can, canPos)
+    }
+    paintVideoImage(params.imgProvider.robots(robot.dir), robot.pos)
   }
+}
 
+case class TextStage(text: Text) extends Stage {
+  def paint(g: CommonGraphics, drawArea: () => DrawArea, params: StageParams): Unit = {
 
+    def paintText(text: Text, drawArea: DrawArea) = {
+      g.setColor(Black)
+      val fontSize = drawArea.area.h.toFloat / 25
+      g.setFontSize(fontSize)
+      val lines = text.lines
+      for (i <- 0 until lines.size) {
+        if (i == 1) {
+          val fontSize = drawArea.area.h.toFloat / 30
+          g.setFontSize(fontSize)
+        }
+        val y = (10 + fontSize * (i + 1)).toInt
+        g.drawString(lines(i), 30, y)
+      }
+    }
+
+    val da = drawArea()
+    clear(g, da)
+    paintText(text, da)
+  }
 }
 
 trait Device {
@@ -148,7 +141,6 @@ trait Device {
  * Abstraction level for Graphics
  * Can, but must not be used from Device implementations
  */
-
 case class Text(lines: List[String])
 
 sealed trait CommonColor

@@ -7,7 +7,7 @@ import clashcode.video.lists._
 
 object VideoMain extends App {
 
-  val framesPerSecond = 20
+  val framesPerSecond = 5
 
   //val vl = AkkaWorkshopPresentationVideos.videos
   //val vl = AkkaWorkshopWinnerVideos.winner
