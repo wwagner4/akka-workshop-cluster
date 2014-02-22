@@ -1,11 +1,8 @@
 package clashcode.video
 
-import clashcode.robot.FieldEvaluator
-import clashcode.robot.FieldFactory
-import clashcode.robot.FieldPos
 import scala.util.Random
-import clashcode.robot.Converter
-import clashcode.robot.FieldState
+
+import clashcode.robot.{Converter, FieldEvaluator, FieldFactory, FieldPos, FieldState}
 
 case class FieldStep(from: FieldState, to: FieldState)
 case class Path(path: List[FieldState], fieldSize: Int)
@@ -13,6 +10,7 @@ case class Path(path: List[FieldState], fieldSize: Int)
 case object SceneCreator {
 
   def stringCodeToStages(strCode: String, gameSteps: Option[Int], seed: Long): List[Stage] = {
+
     val ran = new Random(seed)
 
     def stepsToStages(steps: List[FieldStep], preRobot: RobotView, fieldSize: Int): List[Stage] = steps match {
